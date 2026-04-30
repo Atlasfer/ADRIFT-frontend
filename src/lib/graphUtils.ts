@@ -1,4 +1,4 @@
-import { CourseNode, CourseEdge, NodePosition } from '@/types'
+import { CourseNode, CourseEdge } from '@/types'
 
 export function computeLayout(
   nodes: CourseNode[],
@@ -26,7 +26,7 @@ export function computeLayout(
   semesters.forEach((sem, si) => {
     const semNodes = bySemester.get(sem)!
     const totalHeight = semNodes.length * NODE_GAP
-    const startY = PADDING_TOP + (si % 2 === 0 ? 0 : 40) // slight stagger
+    const startY = PADDING_TOP + (si % 2 === 0 ? 0 : 40)
 
     semNodes.forEach((node, ni) => {
       const x = PADDING_LEFT + si * SEMESTER_GAP + NODE_RADIUS

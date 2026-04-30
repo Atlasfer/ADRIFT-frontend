@@ -1,12 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import {
-  getGraph,
-  getProgressGraph,
-  getProgressSummary,
-  getNodeDetail,
-  claimCourse,
-  unclaimCourse,
-} from '@/lib/api/graph'
+import {getGraph, getProgressGraph, getProgressSummary, getNodeDetail, claimCourse, unclaimCourse,} from '@/lib/api/graph'
 import { useGraphStore } from '@/store/graphStore'
 
 // Query key
