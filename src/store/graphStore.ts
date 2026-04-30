@@ -1,8 +1,8 @@
 import { create } from "zustand";
 
 interface GraphState {
-    selectedNode: string | null;
-    detailNode: string | null;
+    selectedNodeId: string | null;
+    detailNodeId: string | null;
     chain: {upstream: Set<string>, downstream: Set<string>}
     toast: {message: string, type: "success" | "error" | "info"} | null;
     //selection
@@ -17,20 +17,20 @@ interface GraphState {
 }
 
 export const useGraphStore = create<GraphState>((set) => ({
-    selectedNode: null,
-    detailNode: null,
+    selectedNodeId: null,
+    detailNodeId: null,
     chain: {upstream: new Set(), downstream: new Set()},
     toast: null,
 
     selectNode: (id, upstream, downstream) => set({
-        selectedNode: id, chain: {upstream, downstream}
+        selectedNodeId: id, chain: {upstream, downstream}
     }),
     clearSelection: () => set({
-        selectedNode: null, chain: {upstream: new Set(), downstream: new Set()}
+        selectedNodeId: null, chain: {upstream: new Set(), downstream: new Set()}
     }),
-    
-    openDetail: (id) => set({detailNode: id}),
-    closeDetail: () => set({detailNode: null}),
+
+    openDetail: (id) => set({detailNodeId: id}),
+    closeDetail: () => set({detailNodeId: null}),
 
     showToast: (message, type = "success") => set({toast: {message, type}}),
     hideToast: () => set({toast: null}),
