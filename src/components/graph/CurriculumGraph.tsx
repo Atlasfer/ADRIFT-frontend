@@ -84,11 +84,10 @@ function buildRFEdges(
     const srcIsDown = downstream.has(e.source)
     const inChain = noSelection || srcIsUp || tgtIsDown || tgtIsUp || srcIsDown
 
-    const isPath = e.type === 'PATH'
     const color = noSelection
-      ? isPath ? '#1D9E75' : '#374151'
+      ? '#374151'
       : inChain
-        ? isPath ? '#1D9E75' : '#94A3B8'
+        ? '#94A3B8'
         : '#1F2937'
 
     return {
@@ -96,11 +95,11 @@ function buildRFEdges(
       source: e.source,
       target: e.target,
       type: 'smoothstep',
-      animated: isPath && (noSelection || inChain),
+      animated: false,
       style: {
         stroke: color,
         strokeWidth: noSelection ? 1.5 : inChain ? 2.5 : 0.5,
-        strokeDasharray: isPath ? '6 3' : undefined,
+        strokeDasharray: undefined,
         opacity: noSelection ? 0.5 : inChain ? 1 : 0.08,
         transition: 'all 0.3s ease',
       },
