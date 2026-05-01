@@ -77,7 +77,7 @@ export default function CourseNode({ id, data }: NodeProps<CourseNodeType>) {
     <div
       className={`
         relative flex flex-col items-center justify-center
-        w-30 h-30 rounded-full border-[2.5px]
+        w-40 h-40 rounded-full border-[2.5px]
         cursor-pointer select-none transition-all duration-300
         cubic-bezier-[0.34,1.56,0.64,1]
         ${style.container}
@@ -96,19 +96,19 @@ export default function CourseNode({ id, data }: NodeProps<CourseNodeType>) {
       {/* Lab badge */}
       {labPath && (
         <div 
-          className="absolute bottom-3 text-[7.5px] font-extrabold font-mono tracking-wider text-white px-1.5 py-px rounded-full opacity-90"
+          className="absolute bottom-5 text-[9px] font-extrabold font-mono tracking-wider text-white px-1.5 py-px rounded-full opacity-90"
           style={{ backgroundColor: labPath.color }}>
           {labPath.name}
         </div>
       )}
 
       {/* Course code */}
-      <div className={` text-[12px] font-extrabold font-mono tracking-wider mb-0.5 ${style.code}`}>
+      <div className={` absolute top-5 text-[12px] font-extrabold font-mono tracking-wider mb-0.5 ${style.code}`}>
         {data.code}
       </div>
 
       {/* Course name */}
-      <div className={`text-[8px] opacity-80 text-center px-3.5 leading-[1.3] max-w-22.5 ${style.name}`}>
+      <div className={`text-[14px] font-bold opacity-90 text-center px-4 leading-[1.4] max-w-32.5 ${style.name}`}>
         {data.name.length > 18 ? data.name.slice(0, 17) + '…' : data.name}
       </div>
 
