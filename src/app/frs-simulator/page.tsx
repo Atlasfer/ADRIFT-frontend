@@ -8,9 +8,9 @@ import SelectedPanel from "@/components/frs/SelectedPanel";
 import AlternativePanel from "@/components/frs/AlternativePanel";
 import SavedPlans from "@/components/frs/SavedPlans";
 import { useSchedules } from "@/hooks/useFrs";
-import { ScheduleFilterParams } from "@/services/frsService";
-import { Alternative } from "@/services/frsService";
+import { ScheduleFilterParams, Alternative } from "@/services/frsService";
 import { useFrsStore } from "@/store/frsStore";
+import { LayoutGrid, BookMarked } from "lucide-react";
 
 type Tab = "simulator" | "saved";
 
@@ -18,7 +18,7 @@ export default function FrsSimulatorPage() {
   const [tab, setTab] = useState<Tab>("simulator");
   const [filters, setFilters] = useState<ScheduleFilterParams>({});
   const [alternatives, setAlternatives] = useState<Alternative[] | null>(null);
-  const { setAcademicYear, setTerm } = useFrsStore();
+  const { setAcademicYear, setTerm, selectedSchedules } = useFrsStore();
 
   const { data: schedules = [], isLoading } = useSchedules(filters);
 
@@ -33,35 +33,55 @@ export default function FrsSimulatorPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
-      {/* Top nav */}
-      <div className="flex items-center gap-1 px-4 pt-4 border-b border-gray-200 bg-white">
-        <button
-          onClick={() => setTab("simulator")}
-          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-            tab === "simulator"
-              ? "border-blue-600 text-blue-600"
-              : "border-transparent text-gray-500 hover:text-gray-700"
-          }`}
-        >
-          Simulasi FRS
-        </button>
-        <button
-          onClick={() => setTab("saved")}
-          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-            tab === "saved"
-              ? "border-blue-600 text-blue-600"
-              : "border-transparent text-gray-500 hover:text-gray-700"
-          }`}
-        >
-          Rencana Tersimpan
-        </button>
-      </div>
+    <div className="flex flex-col h-screen bg-[#0d0d1a] text-white">
+
+      {/* Top Bar */}
+      <header className="flex items-center justify-between px-6 py-3 border-b border-white/10 bg-[#0f0f1a] shrink-0">
+        <div className="flex items-center gap-3">
+          <span className="text-blue-400 font-bold tracking-tight text-lg">ADRIFT</span>
+          <span className="text-white/20 text-sm">FRS Simulator</span>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex items-center gap-1 bg-white/5 rounded-lg p-1">
+          <button
+            onClick={() => setTab("simulator")}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-colors ${
+              tab === "simulator"
+                ? "bg-blue-600 text-white"
+                : "text-white/40 hover:text-white/70"
+            }`}
+          >
+            <LayoutGrid className="w-3.5 h-3.5" />
+            Simulasi
+          </button>
+          <button
+            onClick={() => setTab("saved")}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-colors ${
+              tab === "saved"
+                ? "bg-blue-600 text-white"
+                : "text-white/40 hover:text-white/70"
+            }`}
+          >
+            <BookMarked className="w-3.5 h-3.5" />
+            Tersimpan
+          </button>
+        </div>
+
+        {/* SKS counter */}
+        <div className="text-xs text-white/30">
+          <span className="text-white font-semibold">
+            {selectedSchedules.reduce((s, c) => s + c.sks, 0)}
+          </span>{" "}
+          SKS dipilih
+        </div>
+      </header>
 
       {tab === "simulator" ? (
         <div className="flex flex-1 overflow-hidden">
-          {/* Left — filter + schedule list */}
-          <div className="flex flex-col flex-1 overflow-hidden border-r border-gray-200">
+
+          {/* Left — schedule list */}
+          <div className="flex flex-col flex-1 overflow-hidden border-r border-white/10">
             <FilterBar filters={filters} onChange={handleFilterChange} />
             <div className="flex-1 overflow-y-auto">
               <ScheduleList schedules={schedules} isLoading={isLoading} />
@@ -69,7 +89,7 @@ export default function FrsSimulatorPage() {
           </div>
 
           {/* Right — selected panel */}
-          <div className="w-80 bg-white overflow-y-auto shrink-0">
+          <div className="w-72 bg-[#0f0f1a] overflow-y-auto shrink-0">
             <SelectedPanel
               onAlternativesFound={setAlternatives}
               onSaveSuccess={handleSaveSuccess}
