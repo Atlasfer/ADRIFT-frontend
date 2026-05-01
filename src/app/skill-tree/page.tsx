@@ -55,7 +55,7 @@ export default function HomePage() {
             <span>View Only</span>
           </div>
           <Link 
-            href="/progress"
+            href="skill-tree/progress"
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-green-700 shadow-[0_4px_20px_rgba(29,158,117,0.3)] transition-all hover:scale-[1.03] active:scale-95">
             My Progress <ArrowRight className="w-4 h-4" />
           </Link>

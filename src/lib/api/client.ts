@@ -1,5 +1,5 @@
 import axios from "axios";
-import {useAuthStore} from "@/stores/authStore";
+import {useAuthStore} from "@/store/authStore";
 
 const apiClient = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000",
