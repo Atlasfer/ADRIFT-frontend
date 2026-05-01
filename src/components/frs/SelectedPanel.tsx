@@ -48,14 +48,12 @@ export default function SelectedPanel({
 
   function handleSave() {
     if (!planName.trim()) return alert("Isi nama rencana dulu!");
-    if (hasTimeConflict)
-      return alert("Selesaikan konflik jadwal sebelum menyimpan!");
+    if (hasTimeConflict) return alert("Selesaikan konflik jadwal sebelum menyimpan!");
     save(buildPayload());
   }
 
   function handleAlternative() {
-    if (selectedSchedules.length === 0)
-      return alert("Pilih mata kuliah dulu!");
+    if (selectedSchedules.length === 0) return alert("Pilih mata kuliah dulu!");
     findAlts(buildPayload(), {
       onSuccess: (data) => onAlternativesFound(data),
     });
@@ -63,54 +61,48 @@ export default function SelectedPanel({
 
   return (
     <div className="flex flex-col gap-3 p-4 h-full">
-      <h2 className="text-sm font-semibold text-gray-700">Kelas Pilihan</h2>
+      <h2 className="text-xs font-semibold text-white/50 uppercase tracking-widest">
+        Kelas Pilihan
+      </h2>
 
       {selectedSchedules.length === 0 ? (
-        <p className="text-xs text-gray-400 mt-2">
-          Belum ada kelas dipilih.
-        </p>
+        <p className="text-xs text-white/30 mt-2">Belum ada kelas dipilih.</p>
       ) : (
         <>
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="text-gray-400 border-b border-gray-100">
-                <th className="text-left py-1">Kelas</th>
-                <th className="text-left py-1">Dosen</th>
-                <th className="text-left py-1">Waktu</th>
-                <th className="text-right py-1">SKS</th>
-                <th className="py-1"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {selectedSchedules.map((s) => (
-                <tr key={s.id} className="border-b border-gray-50">
-                  <td className="py-1.5">
-                    <div className="font-medium">{s.course_name}</div>
-                    <div className="text-gray-400">
-                      Kelas {s.class}
-                    </div>
-                  </td>
-                  <td className="py-1.5 text-gray-600">{s.lecture_name}</td>
-                  <td className="py-1.5 text-gray-600">
-                    {s.day}, {s.start_time}–{s.end_time}
-                  </td>
-                  <td className="py-1.5 text-right text-gray-600">{s.sks}</td>
-                  <td className="py-1.5 text-right">
-                    <button
-                      onClick={() => removeSchedule(s.id)}
-                      className="text-gray-300 hover:text-red-500 transition-colors"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="flex flex-col gap-2">
+            {selectedSchedules.map((s) => (
+              <div
+                key={s.id}
+                className="bg-white/5 border border-white/10 rounded-lg px-3 py-2.5 flex items-start justify-between gap-2"
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium text-white truncate">
+                    {s.course_name}
+                  </div>
+                  <div className="text-xs text-white/40 mt-0.5">
+                    Kelas {s.class} · {s.day} {s.start_time}–{s.end_time}
+                  </div>
+                  <div className="text-xs text-white/30">{s.lecture_name}</div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-xs text-blue-400 font-medium">
+                    {s.sks} SKS
+                  </span>
+                  <button
+                    onClick={() => removeSchedule(s.id)}
+                    className="text-white/20 hover:text-red-400 transition-colors"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
 
           {/* Total SKS */}
-          <div className="text-xs font-semibold text-gray-700 text-right border-t border-gray-100 pt-2">
-            Total SKS: {totalSks}
+          <div className="flex items-center justify-between border-t border-white/10 pt-2">
+            <span className="text-xs text-white/40">Total SKS</span>
+            <span className="text-sm font-bold text-white">{totalSks}</span>
           </div>
 
           {/* Conflict alerts */}
@@ -118,11 +110,14 @@ export default function SelectedPanel({
         </>
       )}
 
+      {/* Spacer */}
+      <div className="flex-1" />
+
       {/* Plan Name Input */}
       <input
         type="text"
         placeholder="Nama Rencana..."
-        className="mt-auto border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500"
         value={planName}
         onChange={(e) => setPlanName(e.target.value)}
       />
@@ -132,16 +127,16 @@ export default function SelectedPanel({
         <button
           onClick={handleAlternative}
           disabled={isFindingAlts || selectedSchedules.length === 0}
-          className="flex-1 border border-blue-600 text-blue-600 rounded-md py-2 text-sm hover:bg-blue-50 transition-colors disabled:opacity-40"
+          className="flex-1 border border-white/20 text-white/70 rounded-md py-2 text-sm hover:bg-white/5 transition-colors disabled:opacity-30"
         >
           {isFindingAlts ? "Mencari..." : "Alternatif"}
         </button>
         <button
           onClick={handleSave}
           disabled={isSaving || selectedSchedules.length === 0}
-          className="flex-1 bg-blue-600 text-white rounded-md py-2 text-sm hover:bg-blue-700 transition-colors disabled:opacity-40"
+          className="flex-1 bg-blue-600 text-white rounded-md py-2 text-sm hover:bg-blue-700 transition-colors disabled:opacity-30"
         >
-          {isSaving ? "Menyimpan..." : "Simpan Jadwal"}
+          {isSaving ? "Menyimpan..." : "Simpan"}
         </button>
       </div>
     </div>
