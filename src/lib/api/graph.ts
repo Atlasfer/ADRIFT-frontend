@@ -8,12 +8,12 @@ export async function getGraph(): Promise<GraphData> {
 }
 
 export async function getNodeDetail(courseId: string): Promise<NodeDetail> {
-    const res = await apiClient.get(`/api/graph/node/${courseId}`);
+    const res = await apiClient.get(`/api/graph/nodes/${courseId}`);
     return res.data.data;
 }
 
 export async function getNodeChain(courseId: string): Promise<NodeChain> {
-    const res = await apiClient.get(`/api/graph/node/${courseId}/chain`);
+    const res = await apiClient.get(`/api/graph/nodes/${courseId}/chain`);
     return res.data.data;
 }
 
