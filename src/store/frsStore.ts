@@ -80,13 +80,12 @@ export const useFrsStore = create<FrsState>((set, get) => ({
   academicYear: "",
   term: "",
 
-  addSchedule: (schedule) => {
-    const current = get().selectedSchedules;
-    // satu matkul hanya boleh satu kelas
-    const filtered = current.filter((s) => s.course_id !== schedule.course_id);
-    const updated = [...filtered, schedule];
-    set({ selectedSchedules: updated, conflicts: computeConflicts(updated) });
-  },
+addSchedule: (schedule) => {
+  const current = get().selectedSchedules;
+  const filtered = current.filter((s) => s.course_name !== schedule.course_name);
+  const updated = [...filtered, schedule];
+  set({ selectedSchedules: updated, conflicts: computeConflicts(updated) });
+},
 
   removeSchedule: (scheduleId) => {
     const updated = get().selectedSchedules.filter((s) => s.id !== scheduleId);

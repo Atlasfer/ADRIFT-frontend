@@ -12,8 +12,9 @@ interface ScheduleListProps {
 function groupByCourse(schedules: Schedule[]): Record<string, Schedule[]> {
   return schedules.reduce(
     (acc, s) => {
-      if (!acc[s.course_id]) acc[s.course_id] = [];
-      acc[s.course_id].push(s);
+      const key = s.course_name;
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(s);
       return acc;
     },
     {} as Record<string, Schedule[]>
@@ -43,11 +44,11 @@ export default function ScheduleList({ schedules, isLoading }: ScheduleListProps
 
   return (
     <div className="flex flex-col gap-3 p-4">
-      {Object.entries(grouped).map(([courseId, classes]) => {
+      {Object.entries(grouped).map(([courseName, classes]) => {
         const first = classes[0];
         return (
           <div
-            key={courseId}
+            key={courseName}
             className="border border-white/10 rounded-lg overflow-hidden"
           >
             {/* Course header */}
@@ -56,7 +57,7 @@ export default function ScheduleList({ schedules, isLoading }: ScheduleListProps
                 {first.course_name}
               </span>
               <span className="text-xs text-white/30 bg-white/5 px-2 py-0.5 rounded-full">
-                {first.sks} SKS · Sem {first.semester}
+                {first.sks} SKS · Sem {first.semester} · {first.prodi}
               </span>
             </div>
 
@@ -80,17 +81,13 @@ export default function ScheduleList({ schedules, isLoading }: ScheduleListProps
                       key={s.id}
                       onClick={() => isSelected ? removeSchedule(s.id) : addSchedule(s)}
                       className={`border-b border-white/5 cursor-pointer transition-colors ${
-                        isSelected
-                          ? "bg-blue-600/20"
-                          : "hover:bg-white/5"
+                        isSelected ? "bg-blue-600/20" : "hover:bg-white/5"
                       }`}
                     >
                       <td className="px-4 py-2.5">
                         <div
                           className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
-                            isSelected
-                              ? "bg-blue-600 border-blue-600"
-                              : "border-white/20"
+                            isSelected ? "bg-blue-600 border-blue-600" : "border-white/20"
                           }`}
                         >
                           {isSelected && (
