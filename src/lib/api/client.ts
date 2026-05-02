@@ -1,20 +1,25 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080",
+  baseURL: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Inject token lazily — avoid importing store at module level
 apiClient.interceptors.request.use((config) => {
-  // Dynamic import to avoid SSR issues with Zustand persist
   if (typeof window !== "undefined") {
-    const { useAuthStore } = require("@/store/authStore");
-    const token = useAuthStore.getState().token;
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    try {
+      const raw = localStorage.getItem("adrift-auth");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        const token = parsed?.state?.token;
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+      }
+    } catch {
+      // ignore parse errors
     }
   }
   return config;

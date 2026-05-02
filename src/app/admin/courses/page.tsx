@@ -6,7 +6,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Plus, Pencil, Trash2, Search, ChevronDown } from "lucide-react";
+import { Plus, Pencil, Trash2, Search } from "lucide-react";
+import Link from "next/link";
 import {
   listCourseGroups,
   listCoursesBySemester,
@@ -19,13 +20,13 @@ import { AdminModal } from "@/components/admin/AdminModal";
 import { FormField } from "@/components/admin/FormField";
 
 const courseSchema = z.object({
-  code: z.string().min(1, "Kode wajib diisi"),
-  name: z.string().min(1, "Nama wajib diisi"),
-  credit: z.number({ invalid_type_error: "Harus angka" }).min(1),
-  semester: z.number({ invalid_type_error: "Harus angka" }).min(1).max(8),
+  code: z.string().min(1, { message: "Kode wajib diisi" }),
+  name: z.string().min(1, { message: "Nama wajib diisi" }),
+  credit: z.coerce.number().min(1),
+  semester: z.coerce.number().min(1).max(8),
   is_elective: z.boolean(),
   description: z.string().optional(),
-  lab: z.string().min(1, "Lab wajib diisi"),
+  lab: z.string().min(1, { message: "Lab wajib diisi" }),
 });
 
 type CourseForm = z.infer<typeof courseSchema>;
@@ -124,12 +125,12 @@ export default function AdminCoursesPage() {
           <h1 className="text-2xl font-bold text-white">Mata Kuliah</h1>
           <p className="text-zinc-400 text-sm mt-1">Kelola daftar mata kuliah per semester</p>
         </div>
-        <button
-          onClick={openCreate}
+        <Link
+          href="/admin/courses/new"
           className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-lg transition-colors"
         >
           <Plus size={15} /> Tambah Mata Kuliah
-        </button>
+        </Link>
       </div>
 
       {/* Semester selector */}

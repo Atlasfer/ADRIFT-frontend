@@ -16,9 +16,6 @@ import {
   listCoursesBySemester,
 } from "@/services/adminService";
 import { AdminModal } from "@/components/admin/AdminModal";
-
-// We'll use a combined approach: fetch all courses for selection
-import { useQuery as useQ } from "@tanstack/react-query";
 import type { AdminCourseResponse } from "@/types/admin";
 
 const prereqSchema = z.object({

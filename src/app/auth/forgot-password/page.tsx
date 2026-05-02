@@ -1,4 +1,3 @@
-// src/app/(auth)/forgot-password/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -6,10 +5,11 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { Mail, ArrowLeft, Loader2, CheckCircle2 } from "lucide-react";
 import { forgotPassword } from "@/services/authService";
 
 const schema = z.object({
-  email: z.string().email("Email tidak valid"),
+  email: z.string().email({ message: "Email tidak valid" }),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -19,11 +19,9 @@ export default function ForgotPasswordPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>({ resolver: zodResolver(schema) });
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  });
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
@@ -38,68 +36,85 @@ export default function ForgotPasswordPage() {
     }
   };
 
-  if (success) {
-    return (
-      <div className="w-full max-w-md px-8 py-10 bg-zinc-900 rounded-2xl border border-zinc-800 shadow-2xl text-center">
-        <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4">
-          <svg className="w-8 h-8 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
-        </div>
-        <h2 className="text-xl font-bold text-white mb-2">Email Terkirim!</h2>
-        <p className="text-zinc-400 text-sm mb-6">
-          Cek email kamu untuk link reset password.
-        </p>
-        <Link href="/login" className="text-indigo-400 text-sm hover:text-indigo-300 transition-colors">
-          Kembali ke Login
-        </Link>
-      </div>
-    );
-  }
-
   return (
-    <div className="w-full max-w-md px-8 py-10 bg-zinc-900 rounded-2xl border border-zinc-800 shadow-2xl">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white tracking-tight">Lupa Password</h1>
-        <p className="mt-1 text-sm text-zinc-400">
-          Masukkan email terdaftar untuk mendapat link reset password.
-        </p>
-      </div>
-
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-        <div>
-          <label className="block text-sm font-medium text-zinc-300 mb-1.5">Email</label>
-          <input
-            {...register("email")}
-            type="email"
-            placeholder="nama@mahasiswa.ac.id"
-            className="w-full px-4 py-2.5 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
-          />
-          {errors.email && (
-            <p className="mt-1 text-xs text-red-400">{errors.email.message}</p>
-          )}
+    <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4">
+      <div className="w-full max-w-sm">
+        {/* Logo */}
+        <div className="flex items-center gap-2 mb-10">
+          <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center">
+            <span className="text-white font-black text-xs">A</span>
+          </div>
+          <span className="text-white font-bold tracking-tight">ADRIFT</span>
         </div>
 
-        {error && (
-          <div className="px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-lg text-sm text-red-400">
-            {error}
+        {success ? (
+          <div className="text-center space-y-6">
+            <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto">
+              <CheckCircle2 size={28} className="text-emerald-400" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-white">Email Terkirim!</h2>
+              <p className="text-zinc-500 text-sm mt-2">
+                Cek email kamu untuk link reset password.
+              </p>
+            </div>
+            <Link
+              href="/auth/login"
+              className="inline-flex items-center justify-center w-full py-3 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 text-sm font-medium rounded-xl transition-all"
+            >
+              Kembali ke Login
+            </Link>
           </div>
+        ) : (
+          <>
+            <div className="mb-8">
+              <h1 className="text-2xl font-bold text-white">Lupa Password</h1>
+              <p className="mt-1.5 text-sm text-zinc-500">
+                Masukkan email terdaftar untuk mendapat link reset password.
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-zinc-400 uppercase tracking-wide">Email</label>
+                <div className="relative">
+                  <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500 pointer-events-none" />
+                  <input
+                    {...register("email")}
+                    type="email"
+                    placeholder="nama@mahasiswa.ac.id"
+                    autoComplete="email"
+                    className="w-full pl-10 pr-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-white placeholder-zinc-600 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 transition-all"
+                  />
+                </div>
+                {errors.email && <p className="text-xs text-red-400">{errors.email.message}</p>}
+              </div>
+
+              {error && (
+                <div className="flex items-start gap-2.5 px-4 py-3 bg-red-500/10 border border-red-500/20 rounded-xl">
+                  <div className="w-1.5 h-1.5 rounded-full bg-red-400 mt-1.5 flex-shrink-0" />
+                  <p className="text-sm text-red-400">{error}</p>
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full flex items-center justify-center gap-2 py-3 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-800 disabled:cursor-not-allowed text-white font-semibold text-sm rounded-xl transition-all"
+              >
+                {loading ? <><Loader2 size={15} className="animate-spin" /> Mengirim...</> : "Kirim Link Reset"}
+              </button>
+            </form>
+
+            <Link
+              href="/auth/login"
+              className="mt-6 flex items-center justify-center gap-1.5 text-sm text-zinc-600 hover:text-zinc-400 transition-colors"
+            >
+              <ArrowLeft size={13} /> Kembali ke Login
+            </Link>
+          </>
         )}
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-800 disabled:cursor-not-allowed text-white font-semibold text-sm rounded-lg transition-colors"
-        >
-          {loading ? "Mengirim..." : "Kirim Link Reset"}
-        </button>
-      </form>
-
-      <p className="mt-6 text-center text-sm text-zinc-500">
-        <Link href="/login" className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
-          ← Kembali ke Login
-        </Link>
-      </p>
+      </div>
     </div>
   );
 }
