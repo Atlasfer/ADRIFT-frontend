@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Plus, Pencil } from "lucide-react";
+import Link from "next/link";
 import { getAllLectures, createLecture, updateLecture } from "@/services/adminService";
 import type { AdminLectureResponse } from "@/types/admin";
 import { AdminModal } from "@/components/admin/AdminModal";
@@ -65,9 +66,9 @@ export default function AdminLecturesPage() {
           <h1 className="text-2xl font-bold text-white">Dosen</h1>
           <p className="text-zinc-400 text-sm mt-1">Kelola data dosen pengampu</p>
         </div>
-        <button onClick={openCreate} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-lg transition-colors">
+        <Link href="/admin/lectures/new" className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-lg transition-colors">
           <Plus size={15} /> Tambah Dosen
-        </button>
+        </Link>
       </div>
 
       <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">

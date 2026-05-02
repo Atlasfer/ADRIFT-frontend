@@ -1,4 +1,3 @@
-// src/stores/authStore.ts
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { UserResponse } from "@/types/auth";
@@ -18,19 +17,17 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       user: null,
       isAuthenticated: false,
-
-      setAuth: (token, user) =>
-        set({ token, user, isAuthenticated: true }),
-
-      setUser: (user) =>
-        set({ user }),
-
-      logout: () =>
-        set({ token: null, user: null, isAuthenticated: false }),
+      setAuth: (token, user) => set({ token, user, isAuthenticated: true }),
+      setUser: (user) => set({ user }),
+      logout: () => set({ token: null, user: null, isAuthenticated: false }),
     }),
     {
       name: "adrift-auth",
-      partialize: (state) => ({ token: state.token, user: state.user, isAuthenticated: state.isAuthenticated }),
+      partialize: (state) => ({
+        token: state.token,
+        user: state.user,
+        isAuthenticated: state.isAuthenticated,
+      }),
     }
   )
 );

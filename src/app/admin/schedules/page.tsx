@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Plus, Pencil, Trash2, Filter } from "lucide-react";
+import Link from "next/link";
 import {
   listScheduleGroups,
   listSchedulesByFilter,
@@ -24,19 +25,19 @@ const PRODI_OPTIONS = ["D4-TI", "D4-SI", "D4-MI"];
 const TERM_OPTIONS = ["Ganjil", "Genap"];
 
 const scheduleSchema = z.object({
-  course_name: z.string().min(1, "Nama mata kuliah wajib"),
-  lecture_id: z.string().min(1, "Dosen wajib dipilih"),
-  class: z.string().min(1, "Kelas wajib diisi"),
-  day: z.string().min(1, "Hari wajib dipilih"),
-  start_time: z.string().regex(/^\d{2}:\d{2}$/, "Format HH:MM"),
-  end_time: z.string().regex(/^\d{2}:\d{2}$/, "Format HH:MM"),
-  room: z.string().min(1, "Ruangan wajib diisi"),
-  semester: z.number({ invalid_type_error: "Harus angka" }).min(1).max(8),
-  academic_year: z.string().min(1, "Tahun akademik wajib diisi"),
-  capacity: z.number({ invalid_type_error: "Harus angka" }).min(1),
-  sks: z.number({ invalid_type_error: "Harus angka" }).min(1),
-  prodi: z.string().min(1, "Prodi wajib dipilih"),
-  term: z.string().min(1, "Term wajib dipilih"),
+  course_name: z.string().min(1, { message: "Nama mata kuliah wajib" }),
+  lecture_id: z.string().min(1, { message: "Dosen wajib dipilih" }),
+  class: z.string().min(1, { message: "Kelas wajib diisi" }),
+  day: z.string().min(1, { message: "Hari wajib dipilih" }),
+  start_time: z.string().regex(/^\d{2}:\d{2}$/, { message: "Format HH:MM" }),
+  end_time: z.string().regex(/^\d{2}:\d{2}$/, { message: "Format HH:MM" }),
+  room: z.string().min(1, { message: "Ruangan wajib diisi" }),
+  semester: z.coerce.number().min(1).max(8),
+  academic_year: z.string().min(1, { message: "Tahun akademik wajib diisi" }),
+  capacity: z.coerce.number().min(1),
+  sks: z.coerce.number().min(1),
+  prodi: z.string().min(1, { message: "Prodi wajib dipilih" }),
+  term: z.string().min(1, { message: "Term wajib dipilih" }),
 });
 
 type ScheduleForm = z.infer<typeof scheduleSchema>;
@@ -160,12 +161,12 @@ export default function AdminSchedulesPage() {
           <h1 className="text-2xl font-bold text-white">Jadwal</h1>
           <p className="text-zinc-400 text-sm mt-1">Kelola jadwal kuliah per periode</p>
         </div>
-        <button
-          onClick={openCreate}
+        <Link
+          href="/admin/schedules/new"
           className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-lg transition-colors"
         >
           <Plus size={15} /> Tambah Jadwal
-        </button>
+        </Link>
       </div>
 
       {/* Groups */}

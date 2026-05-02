@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Plus, Pencil, Trash2 } from "lucide-react";
+import Link from "next/link";
 import { getAllLabPaths, createLabPath, updateLabPath, deleteLabPath } from "@/services/adminService";
 import type { AdminLabPathResponse } from "@/types/admin";
 import { AdminModal } from "@/components/admin/AdminModal";
@@ -69,9 +70,9 @@ export default function AdminLabPathsPage() {
           <h1 className="text-2xl font-bold text-white">Lab Path</h1>
           <p className="text-zinc-400 text-sm mt-1">Kelola jalur laboratorium untuk skill tree</p>
         </div>
-        <button onClick={openCreate} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-lg transition-colors">
+        <Link href="/admin/lab-paths/new" className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-lg transition-colors">
           <Plus size={15} /> Tambah Lab Path
-        </button>
+        </Link>
       </div>
 
       {isLoading ? (
