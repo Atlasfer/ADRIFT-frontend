@@ -79,9 +79,12 @@ export interface SavePlanPayload {
 export async function fetchSchedules(
   params: ScheduleFilterParams
 ): Promise<Schedule[]> {
-  const res = await apiClient.get("/api/frs/schedules", { params });
-  return res.data.data ?? [];
+  const firstRes = await apiClient.get("/api/frs/schedules", {
+    params: { ...params, take: 100, page: 0 },
+  });
+  return firstRes.data.data ?? [];
 }
+
 // GET /api/frs/plans
 export async function fetchPlans(): Promise<FrsPlan[]> {
   const res = await apiClient.get("/api/frs/plans");
