@@ -13,7 +13,10 @@ import {
 export function useSchedules(params: ScheduleFilterParams) {
   return useQuery({
     queryKey: ["frs-schedules", params],
-    queryFn: () => fetchSchedules(params),
+    queryFn: async () => {
+      const result = await fetchSchedules(params);
+      return result ?? [];
+    },
     enabled: !!params.academic_year && !!params.term,
   });
 }

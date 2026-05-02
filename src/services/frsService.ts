@@ -80,9 +80,8 @@ export async function fetchSchedules(
   params: ScheduleFilterParams
 ): Promise<Schedule[]> {
   const res = await apiClient.get("/api/frs/schedules", { params });
-  return res.data.schedules;
+  return res.data.data ?? [];
 }
-
 // GET /api/frs/plans
 export async function fetchPlans(): Promise<FrsPlan[]> {
   const res = await apiClient.get("/api/frs/plans");

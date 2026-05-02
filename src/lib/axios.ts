@@ -8,12 +8,16 @@ const apiClient = axios.create({
   },
 });
 
-// interceptor — nanti ganti token dari auth store
 apiClient.interceptors.request.use((config) => {
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") : null;
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  if (typeof window !== "undefined") {
+    const authData = localStorage.getItem("adrift-auth");
+    if (authData) {
+      const parsed = JSON.parse(authData);
+      const token = parsed?.state?.token;
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
   }
   return config;
 });
