@@ -61,7 +61,7 @@ export default function ProgressPage() {
           <div>
             <h1 className="text-base font-bold text-white leading-tight">Progress Kurikulum</h1>
             <p className="text-[11px] text-gray-500 font-medium">
-              {user ? `${user.name} · ${user.nim}` : 'Informatika ITS · Student Tracking'}
+              {user ? `${user.name} · ${user.nrp}` : 'Informatika ITS · Student Tracking'}
             </p>
           </div>
         </div>
@@ -84,7 +84,7 @@ export default function ProgressPage() {
           </div>
           
           <Link 
-            href="/"
+            href="/skill-tree"
             className="flex item-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-gray-400 bg-white/5 border border-white/10 hover:text-white hover:bg-white/10 transition-all active:scale-95">
             <ArrowLeft className="w-4 h-4" />Kembali
           </Link>
