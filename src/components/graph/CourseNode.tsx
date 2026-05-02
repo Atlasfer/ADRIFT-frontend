@@ -135,8 +135,9 @@ export default function CourseNode({ id, data }: NodeProps<CourseNodeType>) {
             absolute -bottom-7 left-1/2 -translate-x-1/2
             px-3 py-1 rounded-full 
             bg-[#1E293B] border-[1.5px] text-[10px] font-bold
-            flex items-center justify-center z-10 transition-all
-            hover:text-white hover:border-white shadow-lg 
+            text-white
+            flex items-center justify-center z-10 transition-all 
+            hover:border-white shadow-lg 
           `}
           style={{ borderColor: style.border}}
           onMouseEnter={(e) => {
