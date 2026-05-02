@@ -65,6 +65,7 @@ export interface ScheduleFilterParams {
   prodi?: string;
   semester?: number;
   course_name?: string;
+  lecture_name?: string;
 }
 
 export interface SavePlanPayload {
@@ -100,6 +101,7 @@ export async function fetchPlanDetail(planId: string): Promise<FrsPlanDetail> {
 }
 
 
+// POST /frs/alternative
 export async function fetchAlternatives(
   payload: SavePlanPayload
 ): Promise<Alternative[]> {
