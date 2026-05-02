@@ -85,27 +85,24 @@ export async function fetchSchedules(
   return firstRes.data.data ?? [];
 }
 
-// GET /api/frs/plans
-export async function fetchPlans(): Promise<FrsPlan[]> {
-  const res = await apiClient.get("/api/frs/plans");
-  return res.data.plans;
-}
-
-// GET /api/frs/plans/:planId
-export async function fetchPlanDetail(planId: string): Promise<FrsPlanDetail> {
-  const res = await apiClient.get(`/api/frs/plans/${planId}`);
-  return res.data;
-}
-
-// POST /api/frs/plans
 export async function savePlan(payload: SavePlanPayload): Promise<void> {
-  await apiClient.post("/api/frs/plans", payload);
+  await apiClient.post("/api/frs", payload);
 }
 
-// POST /api/frs/plans/alternative
+export async function fetchPlans(): Promise<FrsPlan[]> {
+  const res = await apiClient.get("/api/frs");
+  return res.data.data ?? [];
+}
+
+export async function fetchPlanDetail(planId: string): Promise<FrsPlanDetail> {
+  const res = await apiClient.get(`/api/frs/${planId}`);
+  return res.data.data;
+}
+
+
 export async function fetchAlternatives(
   payload: SavePlanPayload
 ): Promise<Alternative[]> {
-  const res = await apiClient.post("/api/frs/plans/alternative", payload);
+  const res = await apiClient.post("/api/frs/alternative", payload);
   return res.data.data.alternatives;
 }

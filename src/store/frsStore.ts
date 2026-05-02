@@ -86,7 +86,7 @@ addSchedule: (schedule) => {
   const updated = [...filtered, schedule];
   set({ selectedSchedules: updated, conflicts: computeConflicts(updated) });
 },
-
+  
   removeSchedule: (scheduleId) => {
     const updated = get().selectedSchedules.filter((s) => s.id !== scheduleId);
     set({ selectedSchedules: updated, conflicts: computeConflicts(updated) });
