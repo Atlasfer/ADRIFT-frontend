@@ -32,15 +32,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="min-h-screen flex text-white" style={{ background: "#0a0f1e" }}>
 
       {/* ── Sidebar ── */}
-      <aside
-        className="w-60 flex-shrink-0 flex flex-col relative"
-        style={{
-          background: "linear-gradient(180deg, #0d1426 0%, #0a0f1e 100%)",
-          borderRight: "1px solid rgba(59,130,246,0.12)",
-        }}
+      <aside className="w-60 flex-shrink-0 flex flex-col relative overflow-hidden bg-gradient-to-br from-indigo-950 via-zinc-900 to-zinc-950"
+        style={{ borderRight: "1px solid rgba(99,102,241,0.15)" }}
       >
-        {/* Top glow */}
-        <div className="absolute top-0 left-0 right-0 h-32 bg-blue-600/5 pointer-events-none" />
+        {/* Grid pattern — same as login/register left panel */}
+        <div
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
+          style={{
+            backgroundImage:
+              "linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)",
+            backgroundSize: "40px 40px",
+          }}
+        />
+        {/* Glow blobs */}
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-40 h-40 bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
 
         {/* Logo */}
         <div className="px-5 py-5 relative" style={{ borderBottom: "1px solid rgba(59,130,246,0.1)" }}>
