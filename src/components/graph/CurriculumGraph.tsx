@@ -214,7 +214,6 @@ function GraphInner({ data, mode, onClaim, onUnclaim }: CurriculumGraphProps) {
             
             {[
               { label: 'Prasyarat', color: '#94A3B8', dash: false },
-              { label: 'Jalur Lab', color: '#1D9E75', dash: true },
             ].map(l => (
               <div key={l.label} className="flex items-center gap-2">
                 <svg width="28" height="12">
@@ -231,7 +230,7 @@ function GraphInner({ data, mode, onClaim, onUnclaim }: CurriculumGraphProps) {
             ))}
 
             <div className="flex items-center gap-2 mt-0.5">
-              <div className="w-4 h-4 rounded-full border-[1.5px] border-dashed border-purple-600 opacity-70" />
+              <div className="w-4 h-4 rounded-full border-[1.5px] border-purple-600 opacity-70" />
               <span>Matakuliah Pilihan</span>
             </div>
 
