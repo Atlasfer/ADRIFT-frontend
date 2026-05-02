@@ -8,6 +8,7 @@ import {
   fetchAlternatives,
   ScheduleFilterParams,
   SavePlanPayload,
+  deletePlan,
 } from "@/services/frsService";
 
 export function useSchedules(params: ScheduleFilterParams) {
@@ -50,5 +51,16 @@ export function useSavePlan(onSuccess?: () => void) {
 export function useAlternatives() {
   return useMutation({
     mutationFn: (payload: SavePlanPayload) => fetchAlternatives(payload),
+  });
+}
+
+export function useDeletePlan(onSuccess?: () => void) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (planId: string) => deletePlan(planId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["frs-plans"] });
+      onSuccess?.();
+    },
   });
 }

@@ -16,6 +16,7 @@ function toMinutes(time: string): number {
 
 function checkConflict(a: Schedule, b: Schedule): Conflict | null {
   if (a.id === b.id) return null;
+
   const sameDay = a.day === b.day;
   const aStart = toMinutes(a.start_time);
   const aEnd = toMinutes(a.end_time);
@@ -28,20 +29,7 @@ function checkConflict(a: Schedule, b: Schedule): Conflict | null {
       type: "TIME",
       scheduleA: a,
       scheduleB: b,
-      message: `${a.course_name} (${a.class}) bentrok waktu dengan ${b.course_name} (${b.class}) — ${a.day} ${a.start_time}-${a.end_time}`,
-    };
-  }
-
-  // same lecturer, different class, different time — warning
-  if (
-    a.lecture_id === b.lecture_id &&
-    a.course_id !== b.course_id
-  ) {
-    return {
-      type: "LECTURER",
-      scheduleA: a,
-      scheduleB: b,
-      message: `${a.lecture_name} mengampu ${a.course_name} (${a.class}) dan ${b.course_name} (${b.class}) — pastikan tidak bentrok`,
+      message: `${a.course_name} (${a.class}) bentrok dengan ${b.course_name} (${b.class}) — ${a.day} ${a.start_time}–${a.end_time}`,
     };
   }
 

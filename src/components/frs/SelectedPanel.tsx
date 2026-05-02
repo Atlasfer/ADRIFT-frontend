@@ -4,7 +4,8 @@
 import { useFrsStore } from "@/store/frsStore";
 import { useSavePlan, useAlternatives } from "@/hooks/useFrs";
 import ConflictAlert from "./ConflictAlert";
-import { Trash2 } from "lucide-react";
+import { Trash2, AlertCircle } from "lucide-react";
+import { useState } from "react";
 
 interface SelectedPanelProps {
   onAlternativesFound: (alts: any[]) => void;
@@ -26,11 +27,14 @@ export default function SelectedPanel({
     reset,
   } = useFrsStore();
 
+  const [error, setError] = useState<string | null>(null);
+
   const totalSks = selectedSchedules.reduce((sum, s) => sum + s.sks, 0);
   const hasTimeConflict = conflicts.some((c) => c.type === "TIME");
 
   const { mutate: save, isPending: isSaving } = useSavePlan(() => {
     reset();
+    setError(null);
     onSaveSuccess();
   });
 
@@ -46,16 +50,50 @@ export default function SelectedPanel({
     };
   }
 
-  function handleSave() {
-    if (!planName.trim()) return alert("Isi nama rencana dulu!");
-    if (hasTimeConflict) return alert("Selesaikan konflik jadwal sebelum menyimpan!");
-    save(buildPayload());
+ function handleSave() {
+  if (selectedSchedules.length === 0) {
+    setError("Kamu belum memilih kelas apapun. Pilih kelas dulu dari daftar di sebelah kiri.");
+    return;
   }
+  if (!planName.trim()) {
+    setError("Kasih nama rencana ini dulu, biar gampang dicari nanti. Isi kolom nama di bawah.");
+    return;
+  }
+  if (!academicYear) {
+    setError("Pilih tahun akademik dulu lewat filter di sebelah kiri.");
+    return;
+  }
+  if (!term) {
+    setError("Pilih semester dulu lewat filter di sebelah kiri.");
+    return;
+  }
+  if (hasTimeConflict) {
+    setError("Ada jadwal yang bentrok! Ganti salah satu kelas yang konflik sebelum menyimpan.");
+    return;
+  }
+  setError(null);
+  save(buildPayload(), {
+    onError: () => setError("Gagal menyimpan rencana. Coba lagi dalam beberapa saat."),
+  });
+}
 
   function handleAlternative() {
-    if (selectedSchedules.length === 0) return alert("Pilih mata kuliah dulu!");
+    if (selectedSchedules.length === 0) {
+      setError("Kamu belum memilih kelas apapun. Pilih kelas dulu dari daftar di sebelah kiri.");
+      return;
+    }
+    if (!planName.trim()) {
+      setError("Kasih nama rencana ini dulu sebelum mencari alternatif. Isi kolom nama di bawah.");
+      return;
+    }
+    if (!academicYear || !term) {
+      setError("Pilih tahun akademik dan semester dulu lewat filter di sebelah kiri.");
+      return;
+    }
+    setError(null);
     findAlts(buildPayload(), {
       onSuccess: (data) => onAlternativesFound(data),
+      onError: () => setError("Gagal mencari alternatif. Coba lagi dalam beberapa saat."),
     });
   }
 
@@ -99,41 +137,47 @@ export default function SelectedPanel({
             ))}
           </div>
 
-          {/* Total SKS */}
           <div className="flex items-center justify-between border-t border-white/10 pt-2">
             <span className="text-xs text-white/40">Total SKS</span>
             <span className="text-sm font-bold text-white">{totalSks}</span>
           </div>
 
-          {/* Conflict alerts */}
           <ConflictAlert conflicts={conflicts} />
         </>
       )}
 
-      {/* Spacer */}
       <div className="flex-1" />
 
-      {/* Plan Name Input */}
+      {/* Error notif */}
+      {error && (
+        <div className="flex items-start gap-2 bg-red-500/10 border border-red-500/30 rounded-md px-3 py-2 text-xs text-red-400">
+          <AlertCircle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
+
       <input
         type="text"
         placeholder="Nama Rencana..."
         className="bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500"
         value={planName}
-        onChange={(e) => setPlanName(e.target.value)}
+        onChange={(e) => {
+          setPlanName(e.target.value);
+          if (error) setError(null);
+        }}
       />
 
-      {/* Actions */}
       <div className="flex gap-2">
         <button
           onClick={handleAlternative}
-          disabled={isFindingAlts || selectedSchedules.length === 0}
+          disabled={isFindingAlts}
           className="flex-1 border border-white/20 text-white/70 rounded-md py-2 text-sm hover:bg-white/5 transition-colors disabled:opacity-30"
         >
           {isFindingAlts ? "Mencari..." : "Alternatif"}
         </button>
         <button
           onClick={handleSave}
-          disabled={isSaving || selectedSchedules.length === 0}
+          disabled={isSaving}
           className="flex-1 bg-blue-600 text-white rounded-md py-2 text-sm hover:bg-blue-700 transition-colors disabled:opacity-30"
         >
           {isSaving ? "Menyimpan..." : "Simpan"}

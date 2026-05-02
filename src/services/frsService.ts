@@ -108,3 +108,7 @@ export async function fetchAlternatives(
   const res = await apiClient.post("/api/frs/alternative", payload);
   return res.data.data.alternatives;
 }
+
+export async function deletePlan(planId: string): Promise<void> {
+  await apiClient.delete(`/api/frs/${planId}`);
+}
