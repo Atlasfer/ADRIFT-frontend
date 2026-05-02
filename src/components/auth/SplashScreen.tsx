@@ -79,15 +79,22 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
                     transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
                   />
 
-                  {/* Circle */}
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 p-0.5 shadow-[0_0_32px_rgba(99,102,241,0.5)]">
-                    <div className="w-full h-full rounded-full bg-zinc-950 flex items-center justify-center overflow-hidden">
+                  {/* Circle — image fills directly, no dark inner bg */}
+                  <div
+                    className="w-20 h-20 rounded-full overflow-hidden"
+                    style={{
+                      background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+                      boxShadow: "0 0 32px rgba(99,102,241,0.5)",
+                      padding: "2px",
+                    }}
+                  >
+                    <div className="w-full h-full rounded-full overflow-hidden">
                       <Image
                         src="/LogoADRIFT.png"
                         alt="ADRIFT"
-                        width={64}
-                        height={64}
-                        className="object-cover scale-110"
+                        width={80}
+                        height={80}
+                        className="w-full h-full object-cover"
                         priority
                       />
                     </div>

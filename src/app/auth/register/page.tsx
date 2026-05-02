@@ -129,7 +129,7 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        <p className="relative text-zinc-700 text-xs">© 2025 ADRIFT · Academic Dependency Route & Integrated FRS Tracker</p>
+        <p className="relative text-zinc-700 text-xs">© 2026 ADRIFT · Academic Dependency Route & Integrated FRS Tracker</p>
       </div>
 
       {/* ── Right form panel ── */}
