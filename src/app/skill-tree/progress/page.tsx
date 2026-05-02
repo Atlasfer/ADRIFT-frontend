@@ -38,8 +38,10 @@ export default function ProgressPage() {
     return (
       <div className="h-screen bg-[#060B14] flex items-center justify-center">
         <div className="text-center space-y-3">
-          <div className="text-3xl"><AlertTriangle className="text-yellow-500" /></div>
-          <p className="text-gray-500 font-medium">Gagal memuat data progress</p>
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="text-yellow-500" />
+            <p className="text-gray-500 font-medium">Gagal memuat data progress</p>
+          </div>
           <Link href="/" className="text-sm text-blue-400 hover:underline inline-block">
             Kembali ke Beranda
           </Link>

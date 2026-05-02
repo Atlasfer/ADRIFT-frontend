@@ -77,7 +77,7 @@ export default function CourseNode({ id, data }: NodeProps<CourseNodeType>) {
     <div
       className={`
         relative flex flex-col items-center justify-center
-        w-40 h-40 rounded-full border-[2.5px]
+        w-60 h-40 rounded-full border-[2.5px]
         cursor-pointer select-none transition-all duration-300
         cubic-bezier-[0.34,1.56,0.64,1]
         ${style.container}
@@ -108,8 +108,8 @@ export default function CourseNode({ id, data }: NodeProps<CourseNodeType>) {
       </div>
 
       {/* Course name */}
-      <div className={`text-[14px] font-bold opacity-90 text-center px-4 leading-[1.4] max-w-32.5 ${style.name}`}>
-        {data.name.length > 18 ? data.name.slice(0, 17) + '…' : data.name}
+      <div className={`text-[14px] font-bold opacity-90 text-center px-2 leading-[1.4] max-w-42.5 ${style.name}`}>
+        {data.name}
       </div>
 
       {/* Grade badge (Completed) */}
@@ -121,7 +121,7 @@ export default function CourseNode({ id, data }: NodeProps<CourseNodeType>) {
 
       {/* Lock badge (Locked) */}
       {data.mode === 'progress' && status === 'LOCKED' && (
-        <div className="absolute -top-1 -right-1 text-[13px] opacity-45"><Lock size={15} /></div>
+        <div className="absolute -top-1 -right-1 text-[13px]"><Lock size={15} color='gray'/></div>
       )}
 
       {/* Info button */}

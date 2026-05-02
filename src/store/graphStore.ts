@@ -4,7 +4,7 @@ interface GraphState {
     selectedNodeId: string | null;
     detailNodeId: string | null;
     chain: {upstream: Set<string>, downstream: Set<string>}
-    toast: {message: string, type: "success" | "error" | "info"} | null;
+    toast: {message: string, type: "success" | "error"} | null;
     //selection
     selectNode: (id: string, upstream: Set<string>, downstream: Set<string>) => void;
     clearSelection: () => void;
@@ -16,7 +16,7 @@ interface GraphState {
     hideToast: () => void;
 }
 
-export const useGraphStore = create<GraphState>((set) => ({
+export const useGraphStore = create<GraphState>((set, get) => ({
     selectedNodeId: null,
     detailNodeId: null,
     chain: {upstream: new Set(), downstream: new Set()},
@@ -32,6 +32,9 @@ export const useGraphStore = create<GraphState>((set) => ({
     openDetail: (id) => set({detailNodeId: id}),
     closeDetail: () => set({detailNodeId: null}),
 
-    showToast: (message, type = "success") => set({toast: {message, type}}),
-    hideToast: () => set({toast: null}),
+    showToast: (message, type = 'success') => {
+        set({ toast: { message, type } })
+        setTimeout(() => get().hideToast(), 3000)
+    },
+    hideToast: () => set({ toast: null }),
 }));

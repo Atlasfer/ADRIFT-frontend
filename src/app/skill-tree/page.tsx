@@ -23,8 +23,11 @@ export default function HomePage() {
     return (
       <div className="h-screen bg-[#060B14] flex items-center justify-center">
         <div className="text-center space-y-2">
-          <div className="text-3xl"><AlertTriangle className="w-8 h-8 text-yellow-500" /></div>
-          <p className="text-gray-500 font-medium">Gagal memuat data graph</p>
+          <div className="flex items-center gap-2 text-3xl">
+            <AlertTriangle className="w-8 h-8 text-yellow-500" />
+            <p className="text-gray-500 font-medium">Gagal memuat data graph</p>
+            </div>
+          
           <button 
             onClick={() => window.location.reload()} 
             className="text-xs text-blue-500 hover:underline">

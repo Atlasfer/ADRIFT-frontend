@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {getGraph, getProgressGraph, getProgressSummary, getNodeDetail, claimCourse, unclaimCourse,} from '@/lib/api/graph'
 import { useGraphStore } from '@/store/graphStore'
+import { GraphData } from '@/types'
 
 // Query key
 export const graphKeys = {
@@ -57,13 +58,42 @@ export function useClaimCourse() {
   return useMutation({
     mutationFn: ({ courseId, grade }: { courseId: string; grade?: string }) =>
       claimCourse(courseId, grade),
+    onMutate: async ({ courseId }) => {
+      // Cancel outgoing refetch
+      await queryClient.cancelQueries({ queryKey: graphKeys.progress() })
+      await queryClient.cancelQueries({ queryKey: graphKeys.summary() })
+
+      // Simpan data lama
+      const previousGraph = queryClient.getQueryData<GraphData>(graphKeys.progress())
+      // Update cache graph
+      if (previousGraph) {
+        queryClient.setQueryData<GraphData>(graphKeys.progress(), {
+          ...previousGraph,
+          nodes: previousGraph.nodes.map(n => {
+            if (n.id === courseId) {
+              return { ...n, status: 'COMPLETED', grade: 'A', claimed_at: new Date().toISOString() }
+            }
+            // Node downstream AVAILABLE
+            const isDirectChild = previousGraph.edges.some(
+              e => e.source === courseId && e.target === n.id
+            )
+            if (isDirectChild && n.status === 'LOCKED') {
+              return { ...n, status: 'AVAILABLE' }
+            }
+            return n
+          }),
+        })
+      }
+
+      return { previousGraph }
+    },
 
     onSuccess: (data) => {
       const newlyAvailable = data.newly_available.map(na => na.course_id)
       // Refech data
       queryClient.invalidateQueries({ queryKey: graphKeys.progress() })
       queryClient.invalidateQueries({ queryKey: graphKeys.summary() })
-      showToast(`✓ Berhasil diklaim! ${newlyAvailable.length} matakuliah baru tersedia.`)
+      showToast(`Berhasil diklaim! ${newlyAvailable.length} mata kuliah baru tersedia.`)
     },
 
     onError: (_err, _vars, context: any) => {
@@ -87,11 +117,39 @@ export function useUnclaimCourse() {
   return useMutation({
     mutationFn: ({ courseId }: { courseId: string }) =>
       unclaimCourse(courseId),
+    onMutate: async ({ courseId }) => {
+      await queryClient.cancelQueries({ queryKey: graphKeys.progress() })
+      await queryClient.cancelQueries({ queryKey: graphKeys.summary() })
+
+      const previousGraph = queryClient.getQueryData<GraphData>(graphKeys.progress())
+
+      if (previousGraph) {
+        queryClient.setQueryData<GraphData>(graphKeys.progress(), {
+          ...previousGraph,
+          nodes: previousGraph.nodes.map(n => {
+            if (n.id === courseId) {
+              return { ...n, status: 'AVAILABLE', grade: null, claimed_at: null }
+            }
+            // Node downstream LOCKED 
+            const isDirectChild = previousGraph.edges.some(
+              e => e.source === courseId && e.target === n.id
+            )
+            if (isDirectChild && n.status === 'AVAILABLE') {
+              return { ...n, status: 'LOCKED' }
+            }
+            return n
+          }),
+        })
+      }
+
+
+      return { previousGraph }
+    },
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: graphKeys.progress() })
       queryClient.invalidateQueries({ queryKey: graphKeys.summary() })
-      showToast('Klaim matakuliah dibatalkan')
+      showToast('Klaim mata kuliah dibatalkan')
     },
 
     onError: (_err, _vars, context: any) => {

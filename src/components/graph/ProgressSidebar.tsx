@@ -65,7 +65,6 @@ export default function ProgressSidebar({ summary }: ProgressSidebarProps) {
         <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Keterangan</div>
         {[
           { label: 'Prasyarat', color: '#4B5563', dash: false },
-          { label: 'Jalur Lab', color: '#1D9E75', dash: true },
         ].map(l => (
           <div key={l.label} className="flex items-center gap-2">
             <svg width="24" height="12">

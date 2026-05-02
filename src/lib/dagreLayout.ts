@@ -13,8 +13,8 @@ export function getLayoutedElements(
   dagreGraph.setDefaultEdgeLabel(() => ({}))
   dagreGraph.setGraph({
     rankdir: direction,
-    ranksep: 120,
-    nodesep: 80,
+    ranksep: 300,
+    nodesep: 100,
     edgesep: 40,
     marginx: 60,
     marginy: 60,
