@@ -44,7 +44,7 @@ export default function LoginPage() {
       // Fetch data user lengkap
       const user = await getMe();
       setAuth(res.token, user);
-      router.push(res.role === "ADMIN" ? "/admin" : "/frs-simulator");
+      router.push(res.role === "ADMIN" ? "/admin" : "/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login gagal");
     } finally {

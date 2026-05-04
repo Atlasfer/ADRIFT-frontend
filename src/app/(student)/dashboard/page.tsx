@@ -1,8 +1,10 @@
 // src/app/(student)/dashboard/page.tsx
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuthStore } from "@/store/authStore";
+import { getMe } from "@/services/authService";
 import {
   LayoutGrid,
   GitBranch,
@@ -16,7 +18,33 @@ import {
 } from "lucide-react";
 
 export default function DashboardPage() {
-  const { user } = useAuthStore();
+  const { user, setUser } = useAuthStore();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const userData = await getMe();
+        setUser(userData);
+      } catch (err) {
+        console.error("Failed to fetch user:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchUser();
+  }, [setUser]);
+
+  if (loading) {
+    return (
+      <div className="min-h-[calc(100vh-4rem)] bg-[#0d0d1a] flex items-center justify-center">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full border-2 border-blue-500/30 border-t-blue-500 animate-spin" />
+          <span className="text-white/40 text-sm">Memuat dashboard...</span>
+        </div>
+      </div>
+    );
+  }
 
   const quickLinks = [
     {

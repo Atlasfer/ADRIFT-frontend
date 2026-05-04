@@ -78,9 +78,15 @@ export default function ProgressSidebar({ summary }: ProgressSidebarProps) {
         ))}
         <div className="flex items-center gap-2 mt-1">
           <div className="w-6 h-4 flex items-center justify-center">
-            <div className="w-4 h-4 rounded-full border-2 border-dashed border-purple-500/60" />
+            <div className="w-4 h-4 rounded-full border-2 border-red-500/60" />
           </div>
-          <span className="text-xs text-gray-500">Matakuliah Pilihan</span>
+          <span className="text-xs text-gray-500">Mata Kuliah Wajib</span>
+        </div>
+        <div className="flex items-center gap-2 mt-1">
+          <div className="w-6 h-4 flex items-center justify-center">
+            <div className="w-4 h-4 rounded-full border-2 border-purple-500/60" />
+          </div>
+          <span className="text-xs text-gray-500">Mata Kuliah Pilihan</span>
         </div>
       </div>
     </div>

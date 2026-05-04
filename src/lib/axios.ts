@@ -8,18 +8,38 @@ const apiClient = axios.create({
   },
 });
 
+// Interceptor untuk menambahkan token ke setiap request
 apiClient.interceptors.request.use((config) => {
   if (typeof window !== "undefined") {
-    const authData = localStorage.getItem("adrift-auth");
-    if (authData) {
-      const parsed = JSON.parse(authData);
-      const token = parsed?.state?.token;
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+    try {
+      // Ambil token dari localStorage (zustand persist)
+      const authStorage = localStorage.getItem("adrift-auth");
+      if (authStorage) {
+        const { state } = JSON.parse(authStorage);
+        if (state?.token) {
+          config.headers.Authorization = `Bearer ${state.token}`;
+        }
       }
+    } catch (error) {
+      console.error("Error reading auth token:", error);
     }
   }
   return config;
 });
+
+// Interceptor untuk handle error response
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Token expired atau invalid
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("adrift-auth");
+        window.location.href = "/auth/login";
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default apiClient;

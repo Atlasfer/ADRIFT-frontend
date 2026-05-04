@@ -229,9 +229,13 @@ function GraphInner({ data, mode, onClaim, onUnclaim }: CurriculumGraphProps) {
               </div>
             ))}
 
+            <div className="flex items-center gap-2 mt-1">
+              <div className="w-4 h-4 rounded-full border-[1.5px] border-red-500 opacity-70" />
+              <span>Mata Kuliah Wajib</span>
+            </div>
             <div className="flex items-center gap-2 mt-0.5">
               <div className="w-4 h-4 rounded-full border-[1.5px] border-purple-600 opacity-70" />
-              <span>Matakuliah Pilihan</span>
+              <span>Mata Kuliah Pilihan</span>
             </div>
 
             {mode === 'progress' && (

@@ -23,51 +23,53 @@ export interface CourseNodeData extends Record<string, unknown> {
 export type CourseNodeType = Node<CourseNodeData, 'courseNode'>
 
 const STATUS_STYLES: Record<NodeStatus, {
-  container: string; code: string; name: string; border: string;
+  container: string; code: string; name: string;
 }> = {
   COMPLETED: {
-    container: 'bg-[radial-gradient(circle_at_40%_40%,#0D3B2B,#061A12)] border-[#1D9E75]',
+    container: 'bg-[radial-gradient(circle_at_40%_40%,#0D3B2B,#061A12)]',
     code: 'text-[#34D399]',
     name: 'text-[#6EE7B7]',
-    border: '#1D9E75',
   },
   AVAILABLE: {
-    container: 'bg-[radial-gradient(circle_at_40%_40%,#3B2800,#1A1000)] border-[#F59E0B]',
+    container: 'bg-[radial-gradient(circle_at_40%_40%,#3B2800,#1A1000)]',
     code: 'text-[#FCD34D]',
     name: 'text-[#FDE68A]',
-    border: '#F59E0B',
   },
   LOCKED: {
-    container: 'bg-[radial-gradient(circle_at_40%_40%,#1A1A2E,#0D0D1A)] border-[#374151]',
+    container: 'bg-[radial-gradient(circle_at_40%_40%,#1A1A2E,#0D0D1A)]',
     code: 'text-[#6B7280]',
     name: 'text-[#4B5563]',
-    border: '#374151',
   },
 }
 
 const VIEW_STYLE = {
   required: {
-    container: 'bg-[radial-gradient(circle_at_40%_40%,#0D1B3E,#060B1E)] border-[#2563EB]',
+    container: 'bg-[radial-gradient(circle_at_40%_40%,#2D0D0D,#1A0606)]',
     code: 'text-[#93C5FD]',
     name: 'text-[#BFDBFE]',
-    border: '#2563EB',
   },
   elective: {
-    container: 'bg-[radial-gradient(circle_at_40%_40%,#1E0D3E,#0D061E)] border-[#7C3AED]',
+    container: 'bg-[radial-gradient(circle_at_40%_40%,#1E0D3E,#0D061E)]',
     code: 'text-[#C4B5FD]',
     name: 'text-[#DDD6FE]',
-    border: '#7C3AED',
   },
+}
+
+const BORDER_CONFIG = {
+  required: { border: '#EF4444' },
+  elective:  { border: '#7C3AED' },
 }
 
 export default function CourseNode({ id, data }: NodeProps<CourseNodeType>) {
   const [hovered, setHovered] = useState(false)
 
   const status = data.status ?? 'LOCKED'
+
   const style = data.mode === 'progress'
     ? STATUS_STYLES[status]
     : data.is_elective ? VIEW_STYLE.elective : VIEW_STYLE.required
 
+  const borderConfig = data.is_elective ? BORDER_CONFIG.elective : BORDER_CONFIG.required
   const labPath = data.lab_paths?.[0]
 
   const opacityClass = data.isDimmed ? 'opacity-15' : 'opacity-100'
@@ -79,36 +81,31 @@ export default function CourseNode({ id, data }: NodeProps<CourseNodeType>) {
         relative flex flex-col items-center justify-center
         w-60 h-40 rounded-full border-[2.5px]
         cursor-pointer select-none transition-all duration-300
-        cubic-bezier-[0.34,1.56,0.64,1]
         ${style.container}
         ${opacityClass} ${scaleClass}
       `}
+      style={{ borderColor: borderConfig.border }}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
-
-      {/* Outer ring for elective */}
-      {data.is_elective && (
-        <div 
-          className="absolute -inset-1.5 rounded-full border-[1.5px] border-dashed opacity-50 pointer-events-none"
-          style={{ borderColor: style.border }}/>
-      )}
+      onMouseLeave={() => setHovered(false)}
+    >
 
       {/* Lab badge */}
       {labPath && (
-        <div 
+        <div
           className="absolute bottom-5 text-[9px] font-extrabold font-mono tracking-wider text-white px-1.5 py-px rounded-full opacity-90"
-          style={{ backgroundColor: labPath.color }}>
+          style={{ backgroundColor: labPath.color }}
+        >
           {labPath.name}
         </div>
       )}
 
       {/* Course code */}
-      <div className={` absolute top-5 text-[12px] font-extrabold font-mono tracking-wider mb-0.5 ${style.code}`}>
+      <div className={`absolute top-5 text-[12px] font-extrabold font-mono tracking-wider mb-0.5 ${style.code}`}>
         {data.code}
       </div>
 
       {/* Course name */}
-      <div className={`text-[14px] font-bold opacity-90 text-center px-2 leading-[1.4] max-w-42.5 ${style.name}`}>
+      <div className={`text-[14px] font-bold opacity-90 text-center px-2 leading-[1.4] max-w-[170px] ${style.name}`}>
         {data.name}
       </div>
 
@@ -121,7 +118,9 @@ export default function CourseNode({ id, data }: NodeProps<CourseNodeType>) {
 
       {/* Lock badge (Locked) */}
       {data.mode === 'progress' && status === 'LOCKED' && (
-        <div className="absolute -top-1 -right-1 text-[13px]"><Lock size={15} color='gray'/></div>
+        <div className="absolute -top-1 -right-1 text-[13px]">
+          <Lock size={15} color="gray" />
+        </div>
       )}
 
       {/* Info button */}
@@ -131,25 +130,19 @@ export default function CourseNode({ id, data }: NodeProps<CourseNodeType>) {
             e.stopPropagation()
             data.onOpenDetail(id)
           }}
-          className={`
-            absolute -bottom-7 left-1/2 -translate-x-1/2
-            px-3 py-1 rounded-full 
-            bg-[#1E293B] border-[1.5px] text-[10px] font-bold
-            text-white
-            flex items-center justify-center z-10 transition-all 
-            hover:border-white shadow-lg 
-          `}
-          style={{ borderColor: style.border}}
+          className="absolute -bottom-7 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-[#1E293B] border-[1.5px] text-[10px] font-bold text-white flex items-center justify-center z-10 transition-all hover:border-white shadow-lg"
+          style={{ borderColor: borderConfig.border }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = style.border
+            e.currentTarget.style.backgroundColor = borderConfig.border
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.backgroundColor = '#1E293B'
-          }}>
+          }}
+        >
           Info
         </button>
       )}
-      {/* Handles */}
+
       <Handle type="target" position={Position.Left} className="opacity-0 pointer-events-none" />
       <Handle type="source" position={Position.Right} className="opacity-0 pointer-events-none" />
     </div>
