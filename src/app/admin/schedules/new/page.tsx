@@ -10,8 +10,8 @@ import { ArrowLeft, Loader2, Calendar } from "lucide-react";
 import { createSchedule, getAllLectures } from "@/services/adminService";
 
 const DAYS = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-const PRODI_OPTIONS = ["D4-TI", "D4-SI", "D4-MI"];
-const TERM_OPTIONS = ["Ganjil", "Genap"];
+const PRODI_OPTIONS = ["IF", "IUP", "RKA", "RPL", "S2", "S3"];
+const TERM_OPTIONS = ["GANJIL", "GENAP"];
 
 const schema = z.object({
   course_name: z.string().min(1, { message: "Nama mata kuliah wajib" }),
