@@ -24,85 +24,120 @@ export default function SavedPlans() {
     );
   }
 
-  return (
-    <div className="flex flex-col gap-2 p-6 max-w-3xl mx-auto w-full">
-      <h2 className="text-sm font-semibold text-white/50 uppercase tracking-widest mb-2">
-        Rencana Tersimpan
-      </h2>
+return (
+    <div className="flex flex-col gap-4 p-6 max-w-4xl mx-auto w-full h-full bg-[#0d0d1a]">
+      <div className="flex items-center justify-between mb-2">
+        <h2 className="text-xs font-semibold text-white/40 uppercase tracking-widest">
+          Rencana Tersimpan
+        </h2>
+        <span className="text-[10px] text-white/20 bg-white/5 px-2 py-1 rounded border border-white/10">
+          Total {plans.length} Rencana
+        </span>
+      </div>
 
-      {plans.map((plan) => {
-        const isExpanded = expandedPlanId === plan.id;
-        return (
-          <div key={plan.id} className="border border-white/10 rounded-lg overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-3 hover:bg-white/5 transition-colors">
-              <button
-                className="flex-1 text-left"
-                onClick={() => setExpandedPlanId(isExpanded ? null : plan.id)}
-              >
-                <div className="text-sm font-medium text-white">{plan.plan_name}</div>
-                <div className="text-xs text-white/30 mt-0.5">
-                  {plan.academic_year} · {plan.term} · {plan.total_credit} SKS · {plan.course_count} matkul
-                </div>
-              </button>
-
-              <div className="flex items-center gap-2 shrink-0">
+      <div className="flex flex-col gap-3 overflow-y-auto pr-2 custom-scrollbar">
+        {plans.map((plan) => {
+          const isExpanded = expandedPlanId === plan.id;
+          return (
+            <div 
+              key={plan.id} 
+              className={`border transition-all duration-200 rounded-xl overflow-hidden ${
+                isExpanded 
+                ? "border-blue-500/30 bg-blue-500/[0.02]" 
+                : "border-white/10 bg-white/[0.02] hover:border-white/20"
+              }`}
+            >
+              {/* Header Rencana */}
+              <div className="flex items-center justify-between px-5 py-4">
                 <button
-                  onClick={() => {
-                    if (confirm(`Hapus rencana "${plan.plan_name}"?`)) {
-                      deletePlan(plan.id, {
-                        onSuccess: () => {
-                          if (expandedPlanId === plan.id) setExpandedPlanId(null);
-                        },
-                      });
-                    }
-                  }}
-                  disabled={isDeleting}
-                  className="text-white/20 hover:text-red-400 transition-colors disabled:opacity-30"
+                  className="flex-1 text-left min-w-0"
+                  onClick={() => setExpandedPlanId(isExpanded ? null : plan.id)}
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <div className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">
+                    {plan.plan_name}
+                  </div>
+                  <div className="flex items-center gap-3 mt-1.5">
+                    <span className="text-[10px] font-medium text-blue-400 bg-blue-400/10 px-1.5 py-0.5 rounded">
+                      {plan.total_credit} SKS
+                    </span>
+                    <span className="text-[10px] text-white/30 uppercase tracking-tight">
+                      {plan.academic_year} • {plan.term}
+                    </span>
+                  </div>
                 </button>
-                <button onClick={() => setExpandedPlanId(isExpanded ? null : plan.id)}>
-                  {isExpanded
-                    ? <ChevronUp className="w-4 h-4 text-white/30" />
-                    : <ChevronDown className="w-4 h-4 text-white/30" />
-                  }
-                </button>
-              </div>
-            </div>
 
-            {isExpanded && (
-              <div className="border-t border-white/10 px-4 py-3">
-                {isDetailLoading ? (
-                  <p className="text-xs text-white/30">Memuat detail...</p>
-                ) : detail ? (
-                  <table className="w-full text-xs">
-                    <thead>
-                      <tr className="text-white/30 border-b border-white/10">
-                        <th className="text-left py-2">Mata Kuliah</th>
-                        <th className="text-left py-2">Kelas</th>
-                        <th className="text-left py-2">Jadwal</th>
-                        <th className="text-left py-2">Dosen</th>
-                        <th className="text-right py-2">SKS</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {detail.items.map((item) => (
-                        <tr key={item.id} className="border-b border-white/5">
-                          <td className="py-2 text-white font-medium">{item.course_name}</td>
-                          <td className="py-2 text-white/50">{item.class}</td>
-                          <td className="py-2 text-white/50">{item.day}, {item.start_time}–{item.end_time}</td>
-                          <td className="py-2 text-white/50">{item.lecture_name}</td>
-                          <td className="py-2 text-right text-white/50">{item.credit}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                ) : null}
+                <div className="flex items-center gap-4 ml-4">
+                  <button
+                    onClick={() => {
+                      if (confirm(`Hapus rencana "${plan.plan_name}"?`)) {
+                        deletePlan(plan.id, {
+                          onSuccess: () => {
+                            if (expandedPlanId === plan.id) setExpandedPlanId(null);
+                          },
+                        });
+                      }
+                    }}
+                    disabled={isDeleting}
+                    className="p-2 text-white/20 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all disabled:opacity-30"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                  <button 
+                    onClick={() => setExpandedPlanId(isExpanded ? null : plan.id)}
+                    className={`p-2 rounded-lg transition-colors ${isExpanded ? "bg-blue-500/10 text-blue-400" : "text-white/20"}`}
+                  >
+                    {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
-            )}
-          </div>
-        );
-      })}
+
+              {/* Detail Rencana (Accordion Content) */}
+              {isExpanded && (
+                <div className="px-5 pb-5 pt-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <div className="border-t border-white/10 pt-4">
+                    {isDetailLoading ? (
+                      <div className="flex items-center gap-2 py-4 justify-center">
+                        <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                        <p className="text-xs text-white/30 font-medium font-mono">LOADING_DETAIL...</p>
+                      </div>
+                    ) : detail ? (
+                      <div className="flex flex-col gap-4">
+                        {detail.items.map((item) => (
+                          <div key={item.id} className="grid grid-cols-[100px_1fr] gap-4 items-start py-1">
+                            {/* Kolom Kiri: Waktu */}
+                            <div className="flex flex-col pt-0.5">
+                              <span className="text-[10px] font-bold text-white/60 uppercase tracking-wider">
+                                {item.day}
+                              </span>
+                              <span className="text-[10px] text-white/20 font-mono">
+                                {item.start_time} - {item.end_time}
+                              </span>
+                            </div>
+
+                            {/* Kolom Kanan: Info Kuliah */}
+                            <div className="min-w-0">
+                              <div className="text-[13px] font-semibold text-white/90 truncate uppercase">
+                                {item.course_name}
+                              </div>
+                              <div className="flex flex-wrap items-center gap-x-2 mt-1">
+                                <span className="text-[10px] text-blue-400 font-bold italic">Kls {item.class}</span>
+                                <span className="text-white/10">•</span>
+                                <span className="text-[10px] text-white/40 truncate">👨‍🏫 {item.lecture_name}</span>
+                                <span className="text-white/10">•</span>
+                                <span className="text-[10px] text-white/40 uppercase tracking-tighter">{item.credit} SKS</span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
