@@ -101,10 +101,10 @@ return (
                         <p className="text-xs text-white/30 font-mono tracking-tighter">FETCHING_DETAIL...</p>
                       </div>
                     ) : detail ? (
-                      <div className="flex flex-col gap-2">
+                      <div className="flex flex-col gap-1">
                         {detail.items.map((item) => (
                           <div key={item.id} className="grid grid-cols-[100px_1fr] gap-4 items-start py-3 border-b border-white/[0.03] last:border-0 hover:bg-white/[0.01] px-2 rounded-lg transition-colors">
-                            {/* Hari Sejajar Teks */}
+                            {/* Hari & Jam (Sejajar Nama Matkul) */}
                             <div className="flex flex-col mt-[4px] shrink-0">
                               <span className="text-[10px] font-bold text-white/50 uppercase leading-none tracking-wide">
                                 {item.day}
@@ -114,19 +114,28 @@ return (
                               </span>
                             </div>
 
-                            {/* Info Kuliah */}
+                            {/* Info Kuliah & Ruangan */}
                             <div className="min-w-0">
                               <div className="text-[13px] font-bold text-white/90 truncate uppercase leading-tight mb-2 tracking-tight">
                                 {item.course_name}
                               </div>
-                              <div className="flex items-center gap-x-3">
-                                <span className="text-[10px] text-blue-400 font-bold bg-blue-400/10 px-1.5 py-0.5 rounded border border-blue-400/10">
-                                  Kelas {item.class}
-                                </span>
-                                <div className="flex items-center gap-1 text-[10px] text-white/40 italic truncate">
-                                  <span>👨‍🏫 {item.lecture_name}</span>
+                              <div className="flex flex-col gap-1.5">
+                                <div className="flex items-center gap-x-3">
+                                  <span className="text-[10px] text-blue-400 font-bold bg-blue-400/10 px-1.5 py-0.5 rounded border border-blue-400/10 uppercase">
+                                    Kelas {item.class}
+                                  </span>
+                                  <span className="text-[10px] text-white/40 italic truncate max-w-[200px]">
+                                    👨‍🏫 {item.lecture_name}
+                                  </span>
+                                  <span className="text-[10px] text-white/20 font-medium ml-auto uppercase tracking-tighter">
+                                    {item.credit} SKS
+                                  </span>
                                 </div>
-                                <span className="text-[10px] text-white/20 font-medium ml-auto">{item.credit} SKS</span>
+                                {/* Ruangan Info */}
+                                <div className="text-[10px] text-white/20 flex items-center gap-1 italic">
+                                  <span>📍</span>
+                                  <span className="truncate tracking-wide">Ruang: {item.room || "TBA"}</span>
+                                </div>
                               </div>
                             </div>
                           </div>
