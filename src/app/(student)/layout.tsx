@@ -27,9 +27,11 @@ export default function StudentLayout({
   }
 
   return (
-    <div className="min-h-screen bg-[#0d0d1a] text-white">
+    <div className="h-screen overflow-hidden bg-[#0d0d1a] text-white flex flex-col">
       <StudentNav />
-      {children}
+      <div className="flex-1 overflow-hidden">
+        {children}
+      </div>
     </div>
   );
 }

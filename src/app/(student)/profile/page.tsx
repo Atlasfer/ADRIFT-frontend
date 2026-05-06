@@ -73,7 +73,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-[#0d0d1a] py-8 px-4 sm:px-6">
+    <div className="overflow-y-auto h-full bg-[#0d0d1a] py-8 px-4 sm:px-6">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="mb-8">

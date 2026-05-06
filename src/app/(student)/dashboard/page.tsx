@@ -95,7 +95,7 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-[#0d0d1a] py-6 sm:py-8 px-4 sm:px-6">
+    <div className="overflow-y-auto h-full bg-[#0d0d1a] py-6 sm:py-8 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto">
         {/* Welcome Section */}
         <div className="mb-8">

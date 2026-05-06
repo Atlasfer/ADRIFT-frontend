@@ -51,7 +51,7 @@ export default function ProgressPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-[#060B14]">
+    <div className="flex flex-col h-full bg-[#060B14]">
       {/* Header */}
       <header className="shrink-0 flex items-center justify-between px-6 py-4 bg-[#0A1628]/95 border-b border-white/5 backdrop-blur-xl z-20">
         <div className="flex items-center gap-3">
