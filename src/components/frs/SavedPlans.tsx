@@ -124,7 +124,7 @@ return (
                                   <span className="text-[10px] text-blue-400 font-bold bg-blue-400/10 px-1.5 py-0.5 rounded border border-blue-400/10 uppercase">
                                     Kelas {item.class}
                                   </span>
-                                  <span className="text-[10px] text-white/40 italic truncate max-w-[200px]">
+                                  <span className="text-[10px] text-white/40 italic">
                                     👨‍🏫 {item.lecture_name}
                                   </span>
                                   <span className="text-[10px] text-white/20 font-medium ml-auto uppercase tracking-tighter">
