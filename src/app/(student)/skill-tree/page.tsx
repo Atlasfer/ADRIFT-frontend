@@ -3,12 +3,16 @@
 import Link from 'next/link'
 import { usePublicGraph } from '@/lib/api/graphQueries'
 import { useGraphStore } from '@/store/graphStore'
+import { useAuthStore } from '@/store/authStore'
 import CurriculumGraph from '@/components/graph/CurriculumGraph'
-import { AlertTriangle, ArrowRight, Eye, X, Check } from 'lucide-react'
+import { AlertTriangle, ArrowRight, ArrowLeft, Eye, X, Check } from 'lucide-react'
 
 export default function HomePage() {
   const { data: graphData, isLoading, isError } = usePublicGraph()
   const toast = useGraphStore(s => s.toast)
+  const userRole = useAuthStore(s => s.user?.role)
+  const isStudent = userRole === 'STUDENT'
+  const isAdmin = userRole === 'ADMIN'
 
   if (isLoading) {
     return (
@@ -52,16 +56,27 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-blue-500/10 border border-blue-500/20 text-blue-400">
             <span className="text-xs"><Eye/></span>
             <span>View Only</span>
           </div>
-          <Link 
-            href="skill-tree/progress"
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-green-700 shadow-[0_4px_20px_rgba(29,158,117,0.3)] transition-all hover:scale-[1.03] active:scale-95">
-            My Progress <ArrowRight className="w-4 h-4" />
-          </Link>
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-blue-100 bg-blue-500/10 border border-blue-500/30 hover:bg-blue-500/20 transition-all active:scale-95"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Kembali Admin
+            </Link>
+          )}
+          {isStudent && (
+            <Link 
+              href="skill-tree/progress"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-green-700 shadow-[0_4px_20px_rgba(29,158,117,0.3)] transition-all hover:scale-[1.03] active:scale-95">
+              My Progress <ArrowRight className="w-4 h-4" />
+            </Link>
+          )}
         </div>
       </header>
 
