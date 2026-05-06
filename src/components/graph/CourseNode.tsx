@@ -143,8 +143,8 @@ export default function CourseNode({ id, data }: NodeProps<CourseNodeType>) {
         </button>
       )}
 
-      <Handle type="target" position={Position.Left} className="opacity-0 pointer-events-none" />
-      <Handle type="source" position={Position.Right} className="opacity-0 pointer-events-none" />
+      <Handle type="target" position={Position.Top} className="opacity-0 pointer-events-none" />
+      <Handle type="source" position={Position.Bottom} className="opacity-0 pointer-events-none" />
     </div>
   )
 }

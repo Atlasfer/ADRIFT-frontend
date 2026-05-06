@@ -129,7 +129,7 @@ function GraphInner({ data, mode, onClaim, onUnclaim }: CurriculumGraphProps) {
   useEffect(() => {
     const rfNodes = buildRFNodes(data, mode, selectedId, chain.upstream, chain.downstream, openDetail)
     const rfEdges = buildRFEdges(data, selectedId, chain.upstream, chain.downstream)
-    const { nodes: layouted, edges: layoutedEdges } = getLayoutedElements(rfNodes as Node[], rfEdges, 'LR')
+    const { nodes: layouted, edges: layoutedEdges } = getLayoutedElements(rfNodes as Node[], rfEdges, 'TB')
     setNodes(layouted as CourseNodeType[])
     setEdges(layoutedEdges)
   }, [data, mode, selectedId, chain, openDetail, setNodes, setEdges])
@@ -169,7 +169,7 @@ function GraphInner({ data, mode, onClaim, onUnclaim }: CurriculumGraphProps) {
       >
         <Background variant={BackgroundVariant.Dots} gap={28} size={1} color="rgba(255,255,255,0.05)" />
 
-        <Controls className="bg-[#0A1628]/90 border border-white/10 rounded-xl overflow-hidden" />
+        <Controls className="bg-black/90 border border-white/10 rounded-xl overflow-hidden" />
 
         <MiniMap className="bg-[#0A1628]/90! border! border-white/10! rounded-xl!"
           nodeColor={(node) => {
