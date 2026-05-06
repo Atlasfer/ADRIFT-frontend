@@ -97,91 +97,115 @@ export default function SelectedPanel({
     });
   }
 
-  return (
-    <div className="flex flex-col gap-3 p-4 h-full">
-      <h2 className="text-xs font-semibold text-white/50 uppercase tracking-widest">
-        Kelas Pilihan
-      </h2>
+return (
+    <div className="flex flex-col gap-4 p-4 h-full bg-[#0f0f1a]">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xs font-semibold text-white/40 uppercase tracking-widest">
+          Kelas Pilihan
+        </h2>
+        <span className="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded border border-blue-500/20">
+          {selectedSchedules.length} Mata Kuliah
+        </span>
+      </div>
 
       {selectedSchedules.length === 0 ? (
-        <p className="text-xs text-white/30 mt-2">Belum ada kelas dipilih.</p>
+        <div className="flex flex-col items-center justify-center py-12 border border-dashed border-white/5 rounded-xl">
+          <p className="text-xs text-white/20">Belum ada kelas yang dipilih.</p>
+        </div>
       ) : (
         <>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-4 overflow-y-auto pr-1 custom-scrollbar">
             {selectedSchedules.map((s) => (
-              <div
-                key={s.id}
-                className="bg-white/5 border border-white/10 rounded-lg px-3 py-2.5 flex items-start justify-between gap-2"
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-medium text-white truncate">
-                    {s.course_name}
-                  </div>
-                  <div className="text-xs text-white/40 mt-0.5">
-                    Kelas {s.class} · {s.day} {s.start_time}–{s.end_time}
-                  </div>
-                  <div className="text-xs text-white/30">{s.lecture_name}</div>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-xs text-blue-400 font-medium">
-                    {s.sks} SKS
+              <div key={s.id} className="grid grid-cols-[70px_1fr] gap-3 items-start group">
+                {/* Kolom Kiri: Waktu */}
+                <div className="flex flex-col pt-1 shrink-0">
+                  <span className="text-[11px] font-bold text-white/80 uppercase">
+                    {s.day}
                   </span>
-                  <button
-                    onClick={() => removeSchedule(s.id)}
-                    className="text-white/20 hover:text-red-400 transition-colors"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
+                  <span className="text-[10px] text-white/30 font-mono">
+                    {s.start_time}
+                  </span>
+                </div>
+
+                {/* Kolom Kanan: Card */}
+                <div className="bg-white/[0.03] border border-white/10 rounded-xl p-3 hover:bg-white/[0.06] transition-all relative">
+                  <div className="flex justify-between items-start gap-2">
+                    <div className="min-w-0">
+                      <h3 className="text-sm font-medium text-white truncate leading-tight">
+                        {s.course_name}
+                      </h3>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-[10px] text-blue-400 font-bold bg-blue-400/10 px-1.5 py-0.5 rounded">
+                          {s.class}
+                        </span>
+                        <span className="text-[10px] text-white/40">
+                          {s.sks} SKS
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => removeSchedule(s.id)}
+                      className="text-white/20 hover:text-red-400 p-1 transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  
+                  <div className="mt-2 pt-2 border-t border-white/5 space-y-1">
+                    <p className="text-[11px] text-white/40 truncate">👨‍🏫 {s.lecture_name}</p>
+                    <p className="text-[11px] text-white/20 italic">📍 {s.room || "TBA"}</p>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="flex items-center justify-between border-t border-white/10 pt-2">
-            <span className="text-xs text-white/40">Total SKS</span>
-            <span className="text-sm font-bold text-white">{totalSks}</span>
+          <div className="mt-auto pt-4 space-y-4">
+            <div className="flex items-center justify-between border-t border-white/10 pt-4">
+              <span className="text-xs text-white/40">Total Beban</span>
+              <span className="text-sm font-bold text-white">{totalSks} SKS</span>
+            </div>
+            <ConflictAlert conflicts={conflicts} />
           </div>
-
-          <ConflictAlert conflicts={conflicts} />
         </>
       )}
 
-      <div className="flex-1" />
+      {/* Footer Controls */}
+      <div className="mt-4 space-y-3">
+        {error && (
+          <div className="flex items-start gap-2 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 text-[11px] text-red-400">
+            <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+            <span>{error}</span>
+          </div>
+        )}
 
-      {/* Error notif */}
-      {error && (
-        <div className="flex items-start gap-2 bg-red-500/10 border border-red-500/30 rounded-md px-3 py-2 text-xs text-red-400">
-          <AlertCircle className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-          <span>{error}</span>
+        <input
+          type="text"
+          placeholder="Nama Rencana..."
+          className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-blue-500/50 transition-colors"
+          value={planName}
+          onChange={(e) => {
+            setPlanName(e.target.value);
+            if (error) setError(null);
+          }}
+        />
+
+        <div className="flex gap-2">
+          <button
+            onClick={handleAlternative}
+            disabled={isFindingAlts}
+            className="flex-1 bg-white/5 border border-white/10 text-white/60 rounded-lg py-2.5 text-xs font-semibold hover:bg-white/10 transition-all disabled:opacity-30"
+          >
+            {isFindingAlts ? "Memproses..." : "Alternatif"}
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="flex-1 bg-blue-600 text-white rounded-lg py-2.5 text-xs font-bold hover:bg-blue-500 transition-all disabled:opacity-30"
+          >
+            {isSaving ? "Menyimpan..." : "Simpan"}
+          </button>
         </div>
-      )}
-
-      <input
-        type="text"
-        placeholder="Nama Rencana..."
-        className="bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        value={planName}
-        onChange={(e) => {
-          setPlanName(e.target.value);
-          if (error) setError(null);
-        }}
-      />
-
-      <div className="flex gap-2">
-        <button
-          onClick={handleAlternative}
-          disabled={isFindingAlts}
-          className="flex-1 border border-white/20 text-white/70 rounded-md py-2 text-sm hover:bg-white/5 transition-colors disabled:opacity-30"
-        >
-          {isFindingAlts ? "Mencari..." : "Alternatif"}
-        </button>
-        <button
-          onClick={handleSave}
-          disabled={isSaving}
-          className="flex-1 bg-blue-600 text-white rounded-md py-2 text-sm hover:bg-blue-700 transition-colors disabled:opacity-30"
-        >
-          {isSaving ? "Menyimpan..." : "Simpan"}
-        </button>
       </div>
     </div>
   );

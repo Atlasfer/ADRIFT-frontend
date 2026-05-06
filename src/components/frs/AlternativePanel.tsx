@@ -38,72 +38,68 @@ export default function AlternativePanel({
     onClose();
   }
 
-  return (
-    <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-      <div className="bg-[#1a1a2e] border border-white/10 rounded-xl w-full max-w-2xl max-h-[80vh] overflow-y-auto shadow-xl">
-        <div className="flex items-center justify-between p-4 border-b border-white/10">
-          <h2 className="font-semibold text-white">Alternatif Jadwal</h2>
-          <button onClick={onClose} className="text-white/40 hover:text-white transition-colors">
+return (
+    <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+      <div className="bg-[#0d0d1a] border border-white/10 rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden shadow-2xl flex flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between p-5 border-b border-white/10 bg-[#0f0f1a]">
+          <div>
+            <h2 className="font-bold text-white">Alternatif Jadwal</h2>
+            <p className="text-xs text-white/40">Pilih kombinasi jadwal yang tidak bentrok</p>
+          </div>
+          <button 
+            onClick={onClose} 
+            className="p-2 rounded-full hover:bg-white/5 text-white/40 hover:text-white transition-all"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="p-4 flex flex-col gap-4">
-          {alternatives.length === 0 && (
-            <p className="text-sm text-white/40 text-center py-8">
+        {/* List Content */}
+        <div className="p-5 flex flex-col gap-6 overflow-y-auto custom-scrollbar">
+          {alternatives.length === 0 ? (
+            <div className="text-center py-20 text-white/20 text-sm italic">
               Tidak ada alternatif ditemukan.
-            </p>
-          )}
+            </div>
+          ) : (
+            alternatives.map((alt, i) => {
+              const totalSks = alt.schedules.reduce((sum, s) => sum + s.sks, 0);
+              return (
+                <div key={i} className="flex flex-col gap-4 bg-white/[0.02] border border-white/5 rounded-xl p-4 hover:border-blue-500/30 transition-all">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-black text-blue-500 uppercase tracking-tighter bg-blue-500/10 px-2 py-0.5 rounded">
+                      Opsi {i + 1}
+                    </span>
+                    <span className="text-xs font-medium text-white/40">{totalSks} SKS</span>
+                  </div>
 
-          {alternatives.map((alt, i) => {
-            const totalSks = alt.schedules.reduce((sum, s) => sum + s.sks, 0);
-            return (
-              <div key={i} className="border border-white/10 rounded-lg overflow-hidden">
-                <div className="bg-white/5 px-4 py-2 border-b border-white/10 flex items-center justify-between">
-                  <span className="text-sm font-semibold text-white">
-                    Alternatif {i + 1}
-                  </span>
-                  <span className="text-xs text-white/30">{totalSks} SKS</span>
-                </div>
-
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="text-xs text-white/30 border-b border-white/10">
-                      <th className="px-4 py-2 text-left">Kelas</th>
-                      <th className="px-4 py-2 text-left">Dosen</th>
-                      <th className="px-4 py-2 text-left">Waktu</th>
-                      <th className="px-4 py-2 text-right">SKS</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                  <div className="flex flex-col gap-3">
                     {alt.schedules.map((s, j) => (
-                      <tr key={j} className="border-b border-white/5">
-                        <td className="px-4 py-2">
-                          <div className="font-medium text-white">{s.course_name}</div>
-                          <div className="text-xs text-white/40">Kelas {s.class}</div>
-                        </td>
-                        <td className="px-4 py-2 text-white/60">{s.lecture_name}</td>
-                        <td className="px-4 py-2 text-white/60">
-                          {s.day}, {s.start_at}–{s.end_at}
-                        </td>
-                        <td className="px-4 py-2 text-right text-white/60">{s.sks}</td>
-                      </tr>
+                      <div key={j} className="grid grid-cols-[80px_1fr] gap-4 items-start">
+                        <div className="flex flex-col">
+                          <span className="text-[10px] font-bold text-white/60 uppercase">{s.day}</span>
+                          <span className="text-[10px] text-white/20 font-mono">{s.start_at}</span>
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-sm text-white/90 font-medium truncate">{s.course_name}</div>
+                          <div className="text-[10px] text-white/40 mt-0.5">
+                            Kelas {s.class} • {s.lecture_name}
+                          </div>
+                        </div>
+                      </div>
                     ))}
-                  </tbody>
-                </table>
+                  </div>
 
-                <div className="px-4 py-3 border-t border-white/10">
                   <button
                     onClick={() => handlePilih(alt)}
-                    className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md py-2 text-sm transition-colors"
+                    className="mt-2 w-full bg-blue-600/10 hover:bg-blue-600 text-blue-400 hover:text-white border border-blue-600/20 rounded-lg py-2 text-xs font-bold transition-all"
                   >
-                    <CheckCircle className="w-4 h-4" />
                     Pakai Alternatif Ini
                   </button>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
       </div>
     </div>

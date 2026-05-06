@@ -150,12 +150,11 @@ export default function FrsSimulatorPage() {
       )}
 
       {alternatives && (
-        <AlternativePanel
-          alternatives={alternatives}
-          onClose={() => setAlternatives(null)}
-          onSaveSuccess={handleSaveSuccess}
-        />
-      )}
+  <AlternativePanel
+    alternatives={alternatives}
+    onClose={() => setAlternatives(null)}
+  />
+)}
     </div>
   );
 }
