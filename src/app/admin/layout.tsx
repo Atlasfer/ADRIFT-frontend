@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
@@ -21,12 +22,26 @@ const NAV = [
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, logout } = useAuthStore();
+  const { isAuthenticated, user, logout } = useAuthStore();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push("/auth/login");
+    } else if (user?.role === "STUDENT") {
+      router.push("/dashboard");
+    } else if (user?.role !== "ADMIN") {
+      router.push("/");
+    }
+  }, [isAuthenticated, user, router]);
 
   const handleLogout = () => {
     logout();
     router.push("/auth/login");
   };
+
+  if (!isAuthenticated || user?.role !== "ADMIN") {
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex text-white" style={{ background: "#0a0f1e" }}>

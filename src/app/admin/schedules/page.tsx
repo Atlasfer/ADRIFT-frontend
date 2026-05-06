@@ -21,8 +21,8 @@ import { AdminModal } from "@/components/admin/AdminModal";
 import { FormField } from "@/components/admin/FormField";
 
 const DAYS = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-const PRODI_OPTIONS = ["D4-TI", "D4-SI", "D4-MI"];
-const TERM_OPTIONS = ["Ganjil", "Genap"];
+const PRODI_OPTIONS = ["IF", "IUP", "RKA", "RPL", "S2", "S3"];
+const TERM_OPTIONS = ["GANJIL", "GENAP"];
 
 const scheduleSchema = z.object({
   course_name: z.string().min(1, { message: "Nama mata kuliah wajib" }),
