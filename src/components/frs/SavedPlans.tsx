@@ -53,15 +53,15 @@ return (
                   className="flex-1 text-left min-w-0"
                   onClick={() => setExpandedPlanId(isExpanded ? null : plan.id)}
                 >
-                  <div className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">
+                  <div className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors tracking-tight">
                     {plan.plan_name}
                   </div>
                   <div className="flex items-center gap-3 mt-1.5">
-                    <span className="text-[10px] font-medium text-blue-400 bg-blue-400/10 px-1.5 py-0.5 rounded">
+                    <span className="text-[10px] font-bold text-blue-400 bg-blue-400/10 px-1.5 py-0.5 rounded border border-blue-400/10 uppercase">
                       {plan.total_credit} SKS
                     </span>
-                    <span className="text-[10px] text-white/30 uppercase tracking-tight">
-                      {plan.academic_year} • {plan.term}
+                    <span className="text-[10px] text-white/30 font-medium uppercase tracking-tighter">
+                      {plan.academic_year} • {plan.term} • {plan.course_count} MATKUL
                     </span>
                   </div>
                 </button>
@@ -84,47 +84,49 @@ return (
                   </button>
                   <button 
                     onClick={() => setExpandedPlanId(isExpanded ? null : plan.id)}
-                    className={`p-2 rounded-lg transition-colors ${isExpanded ? "bg-blue-500/10 text-blue-400" : "text-white/20"}`}
+                    className={`p-2 rounded-lg transition-colors ${isExpanded ? "bg-blue-500/10 text-blue-400" : "text-white/20 hover:text-white"}`}
                   >
                     {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
 
-              {/* Detail Rencana (Accordion Content) */}
+              {/* Detail Rencana (Accordion) */}
               {isExpanded && (
                 <div className="px-5 pb-5 pt-2 animate-in fade-in slide-in-from-top-2 duration-300">
                   <div className="border-t border-white/10 pt-4">
                     {isDetailLoading ? (
-                      <div className="flex items-center gap-2 py-4 justify-center">
+                      <div className="flex items-center gap-2 py-8 justify-center">
                         <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                        <p className="text-xs text-white/30 font-medium font-mono">LOADING_DETAIL...</p>
+                        <p className="text-xs text-white/30 font-mono tracking-tighter">FETCHING_DETAIL...</p>
                       </div>
                     ) : detail ? (
-                      <div className="flex flex-col gap-4">
+                      <div className="flex flex-col gap-2">
                         {detail.items.map((item) => (
-                          <div key={item.id} className="grid grid-cols-[100px_1fr] gap-4 items-start py-1">
-                            {/* Kolom Kiri: Waktu */}
-                            <div className="flex flex-col pt-0.5">
-                              <span className="text-[10px] font-bold text-white/60 uppercase tracking-wider">
+                          <div key={item.id} className="grid grid-cols-[100px_1fr] gap-4 items-start py-3 border-b border-white/[0.03] last:border-0 hover:bg-white/[0.01] px-2 rounded-lg transition-colors">
+                            {/* Hari Sejajar Teks */}
+                            <div className="flex flex-col mt-[4px] shrink-0">
+                              <span className="text-[10px] font-bold text-white/50 uppercase leading-none tracking-wide">
                                 {item.day}
                               </span>
-                              <span className="text-[10px] text-white/20 font-mono">
+                              <span className="text-[9px] text-white/20 font-mono mt-1.5 leading-none tracking-tight italic">
                                 {item.start_time} - {item.end_time}
                               </span>
                             </div>
 
-                            {/* Kolom Kanan: Info Kuliah */}
+                            {/* Info Kuliah */}
                             <div className="min-w-0">
-                              <div className="text-[13px] font-semibold text-white/90 truncate uppercase">
+                              <div className="text-[13px] font-bold text-white/90 truncate uppercase leading-tight mb-2 tracking-tight">
                                 {item.course_name}
                               </div>
-                              <div className="flex flex-wrap items-center gap-x-2 mt-1">
-                                <span className="text-[10px] text-blue-400 font-bold italic">Kls {item.class}</span>
-                                <span className="text-white/10">•</span>
-                                <span className="text-[10px] text-white/40 truncate">👨‍🏫 {item.lecture_name}</span>
-                                <span className="text-white/10">•</span>
-                                <span className="text-[10px] text-white/40 uppercase tracking-tighter">{item.credit} SKS</span>
+                              <div className="flex items-center gap-x-3">
+                                <span className="text-[10px] text-blue-400 font-bold bg-blue-400/10 px-1.5 py-0.5 rounded border border-blue-400/10">
+                                  Kelas {item.class}
+                                </span>
+                                <div className="flex items-center gap-1 text-[10px] text-white/40 italic truncate">
+                                  <span>👨‍🏫 {item.lecture_name}</span>
+                                </div>
+                                <span className="text-[10px] text-white/20 font-medium ml-auto">{item.credit} SKS</span>
                               </div>
                             </div>
                           </div>

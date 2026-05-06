@@ -116,14 +116,14 @@ return (
         <>
           <div className="flex flex-col gap-4 overflow-y-auto pr-1 custom-scrollbar">
             {selectedSchedules.map((s) => (
-              <div key={s.id} className="grid grid-cols-[70px_1fr] gap-3 items-start group">
-                {/* Kolom Kiri: Waktu */}
-                <div className="flex flex-col pt-1 shrink-0">
-                  <span className="text-[11px] font-bold text-white/80 uppercase">
+              <div key={s.id} className="grid grid-cols-[80px_1fr] gap-3 items-start group">
+                {/* Kolom Kiri: Waktu - Diberi margin top 3px agar sejajar teks kanan */}
+                <div className="flex flex-col mt-[3px] shrink-0">
+                  <span className="text-[11px] font-bold text-white/70 uppercase leading-none">
                     {s.day}
                   </span>
-                  <span className="text-[10px] text-white/30 font-mono">
-                    {s.start_time}
+                  <span className="text-[9px] text-white/30 font-mono mt-1 leading-none">
+                    {s.start_time} - {s.end_time}
                   </span>
                 </div>
 
@@ -131,12 +131,12 @@ return (
                 <div className="bg-white/[0.03] border border-white/10 rounded-xl p-3 hover:bg-white/[0.06] transition-all relative">
                   <div className="flex justify-between items-start gap-2">
                     <div className="min-w-0">
-                      <h3 className="text-sm font-medium text-white truncate leading-tight">
+                      <h3 className="text-sm font-semibold text-white truncate leading-tight">
                         {s.course_name}
                       </h3>
-                      <div className="flex items-center gap-2 mt-1">
+                      <div className="flex items-center gap-2 mt-1.5">
                         <span className="text-[10px] text-blue-400 font-bold bg-blue-400/10 px-1.5 py-0.5 rounded">
-                          {s.class}
+                          Kelas {s.class}
                         </span>
                         <span className="text-[10px] text-white/40">
                           {s.sks} SKS
@@ -151,9 +151,9 @@ return (
                     </button>
                   </div>
                   
-                  <div className="mt-2 pt-2 border-t border-white/5 space-y-1">
+                  <div className="mt-2.5 pt-2 border-t border-white/5 space-y-1">
                     <p className="text-[11px] text-white/40 truncate">👨‍🏫 {s.lecture_name}</p>
-                    <p className="text-[11px] text-white/20 italic">📍 {s.room || "TBA"}</p>
+                    <p className="text-[11px] text-white/20 italic tracking-tight">📍 {s.room || "TBA"}</p>
                   </div>
                 </div>
               </div>
@@ -170,7 +170,7 @@ return (
         </>
       )}
 
-      {/* Footer Controls */}
+      {/* Footer Controls tetap sama... */}
       <div className="mt-4 space-y-3">
         {error && (
           <div className="flex items-start gap-2 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2 text-[11px] text-red-400">
