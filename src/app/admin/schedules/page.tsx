@@ -32,10 +32,10 @@ const scheduleSchema = z.object({
   start_time: z.string().regex(/^\d{2}:\d{2}$/, { message: "Format HH:MM" }),
   end_time: z.string().regex(/^\d{2}:\d{2}$/, { message: "Format HH:MM" }),
   room: z.string().min(1, { message: "Ruangan wajib diisi" }),
-  semester: z.coerce.number().min(1).max(8),
+  semester: z.number().min(1).max(8),
   academic_year: z.string().min(1, { message: "Tahun akademik wajib diisi" }),
-  capacity: z.coerce.number().min(1),
-  sks: z.coerce.number().min(1),
+  capacity: z.number().min(1),
+  sks: z.number().min(1),
   prodi: z.string().min(1, { message: "Prodi wajib dipilih" }),
   term: z.string().min(1, { message: "Term wajib dipilih" }),
 });

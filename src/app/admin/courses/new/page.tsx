@@ -12,8 +12,8 @@ import { createCourse } from "@/services/adminService";
 const schema = z.object({
   code: z.string().min(1, { message: "Kode wajib diisi" }),
   name: z.string().min(1, { message: "Nama wajib diisi" }),
-  credit: z.coerce.number({ message: "Harus angka" }).min(1),
-  semester: z.coerce.number({ message: "Harus angka" }).min(1).max(8),
+  credit: z.number({ message: "Harus angka" }).min(1),
+  semester: z.number({ message: "Harus angka" }).min(1).max(8),
   is_elective: z.boolean(),
   description: z.string().optional(),
   lab: z.string().min(1, { message: "Lab wajib diisi" }),
@@ -89,12 +89,12 @@ export default function NewCoursePage() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <label className="text-xs font-medium text-zinc-400">SKS</label>
-              <input {...register("credit")} type="number" min={1} max={6} placeholder="3" className={inputClass} />
+              <input {...register("credit", { valueAsNumber: true })} type="number" min={1} max={6} placeholder="3" className={inputClass} />
               {errors.credit && <p className="text-xs text-red-400">{errors.credit.message}</p>}
             </div>
             <div className="space-y-1.5">
               <label className="text-xs font-medium text-zinc-400">Semester</label>
-              <input {...register("semester")} type="number" min={1} max={8} placeholder="1" className={inputClass} />
+              <input {...register("semester", { valueAsNumber: true })} type="number" min={1} max={8} placeholder="1" className={inputClass} />
               {errors.semester && <p className="text-xs text-red-400">{errors.semester.message}</p>}
             </div>
           </div>

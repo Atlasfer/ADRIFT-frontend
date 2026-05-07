@@ -31,7 +31,7 @@ export default function AdminLabPathsPage() {
     queryFn: getAllLabPaths,
   });
 
-  const { register, handleSubmit, reset, watch, formState: { errors } } = useForm<LabPathForm>({
+  const { register, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm<LabPathForm>({
     resolver: zodResolver(schema),
     defaultValues: { color: "#6366f1" },
   });
@@ -113,7 +113,7 @@ export default function AdminLabPathsPage() {
           <div>
             <label className="block text-sm font-medium text-zinc-300 mb-1.5">Warna</label>
             <div className="flex items-center gap-3">
-              <input type="color" value={colorValue} onChange={(e) => {}} {...register("color")} className="w-10 h-10 rounded cursor-pointer bg-transparent border-0 p-0" />
+              <input type="color" value={colorValue} onChange={(e) => setValue("color", e.target.value)} className="w-10 h-10 rounded cursor-pointer bg-transparent border-0 p-0" />
               <input {...register("color")} placeholder="#6366f1" className="flex-1 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-indigo-500 font-mono" />
             </div>
             {errors.color && <p className="mt-1 text-xs text-red-400">{errors.color.message}</p>}

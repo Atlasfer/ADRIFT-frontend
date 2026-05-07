@@ -22,8 +22,8 @@ import { FormField } from "@/components/admin/FormField";
 const courseSchema = z.object({
   code: z.string().min(1, { message: "Kode wajib diisi" }),
   name: z.string().min(1, { message: "Nama wajib diisi" }),
-  credit: z.coerce.number().min(1),
-  semester: z.coerce.number().min(1).max(8),
+  credit: z.number().min(1),
+  semester: z.number().min(1).max(8),
   is_elective: z.boolean(),
   description: z.string().optional(),
   lab: z.string().min(1, { message: "Lab wajib diisi" }),

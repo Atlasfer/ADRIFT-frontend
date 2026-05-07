@@ -21,10 +21,10 @@ const schema = z.object({
   start_time: z.string().regex(/^\d{2}:\d{2}$/, { message: "Format HH:MM" }),
   end_time: z.string().regex(/^\d{2}:\d{2}$/, { message: "Format HH:MM" }),
   room: z.string().min(1, { message: "Ruangan wajib diisi" }),
-  semester: z.coerce.number().min(1).max(8),
+  semester: z.number().min(1).max(8),
   academic_year: z.string().min(1, { message: "Tahun akademik wajib diisi" }),
-  capacity: z.coerce.number().min(1),
-  sks: z.coerce.number().min(1),
+  capacity: z.number().min(1),
+  sks: z.number().min(1),
   prodi: z.string().min(1, { message: "Prodi wajib dipilih" }),
   term: z.string().min(1, { message: "Term wajib dipilih" }),
 });
@@ -140,7 +140,7 @@ export default function NewSchedulePage() {
             </div>
             <div className="space-y-1.5">
               <label className="text-xs font-medium text-zinc-400">Kapasitas</label>
-              <input {...register("capacity")} type="number" min={1} placeholder="40" className={inputClass} />
+              <input {...register("capacity", { valueAsNumber: true })} type="number" min={1} placeholder="40" className={inputClass} />
               {errors.capacity && <p className="text-xs text-red-400">{errors.capacity.message}</p>}
             </div>
           </div>
@@ -153,12 +153,12 @@ export default function NewSchedulePage() {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <label className="text-xs font-medium text-zinc-400">SKS</label>
-              <input {...register("sks")} type="number" min={1} max={6} placeholder="3" className={inputClass} />
+              <input {...register("sks", { valueAsNumber: true })} type="number" min={1} max={6} placeholder="3" className={inputClass} />
               {errors.sks && <p className="text-xs text-red-400">{errors.sks.message}</p>}
             </div>
             <div className="space-y-1.5">
               <label className="text-xs font-medium text-zinc-400">Semester</label>
-              <input {...register("semester")} type="number" min={1} max={8} placeholder="1" className={inputClass} />
+              <input {...register("semester", { valueAsNumber: true })} type="number" min={1} max={8} placeholder="1" className={inputClass} />
               {errors.semester && <p className="text-xs text-red-400">{errors.semester.message}</p>}
             </div>
           </div>
