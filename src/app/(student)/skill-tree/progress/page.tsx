@@ -38,12 +38,10 @@ export default function ProgressPage() {
     return (
       <div className="h-screen bg-[#060B14] flex items-center justify-center">
         <div className="text-center space-y-3">
-          <div className="flex items-center gap-2">
-            <AlertTriangle className="text-yellow-500" />
-            <p className="text-gray-500 font-medium">Gagal memuat data progress</p>
-          </div>
-          <Link href="/" className="text-sm text-blue-400 hover:underline inline-block">
-            Kembali ke Beranda
+          <div className="text-3xl"><AlertTriangle className="text-yellow-500" /></div>
+          <p className="text-gray-500 font-medium">Gagal memuat data progress</p>
+          <Link href="/skill-tree" className="text-sm text-blue-400 hover:underline inline-block">
+            Kembali ke Skill Tree
           </Link>
         </div>
       </div>
@@ -51,21 +49,14 @@ export default function ProgressPage() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-[#060B14]">
+    <div className="flex flex-col h-screen bg-[#060B14]">
       {/* Header */}
-      <header className="shrink-0 flex items-center justify-between px-6 py-4 bg-[#0A1628]/95 border-b border-white/5 backdrop-blur-xl z-20">
-        <div className="flex items-center gap-3">
-          <Link 
-            href="/" 
-            className="w-9 h-9 rounded-xl flex items-center justify-center bg-[#2563EB] shadow-lg hover:opacity-80 transition-all active:scale-95">
-            <span className="text-white font-black text-xs">TC</span>
-          </Link>
-          <div>
-            <h1 className="text-base font-bold text-white leading-tight">Progress Kurikulum</h1>
-            <p className="text-[11px] text-gray-500 font-medium">
-              {user ? `${user.name} · ${user.nrp}` : 'Informatika ITS · Student Tracking'}
-            </p>
-          </div>
+      <header className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-white/5">
+        <div>
+          <h1 className="text-xl font-bold text-white">Progress Kurikulum</h1>
+          <p className="text-xs text-gray-500 mt-1">
+            {user ? `${user.name} · ${user.nrp}` : 'Tracking Progress Akademik'}
+          </p>
         </div>
 
         <div className="flex items-center gap-4">
@@ -87,8 +78,9 @@ export default function ProgressPage() {
           
           <Link 
             href="/skill-tree"
-            className="flex item-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-gray-400 bg-white/5 border border-white/10 hover:text-white hover:bg-white/10 transition-all active:scale-95">
-            <ArrowLeft className="w-4 h-4" />Kembali
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-gray-400 bg-white/5 border border-white/10 hover:text-white hover:bg-white/10 transition-all">
+            <ArrowLeft className="w-4 h-4" />
+            Kembali
           </Link>
         </div>
       </header>
