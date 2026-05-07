@@ -5,7 +5,7 @@ import { useAuthStore } from "@/store/authStore";
 import {
   BookOpen, Calendar, GraduationCap, FlaskConical,
   GitMerge, ArrowUpRight, Plus, Activity, Database,
-  Layers, Network, Clock, FileUp,
+  Layers, Network, Clock, GitBranch, FileUp,
 } from "lucide-react";
 
 const MODULES = [
@@ -155,12 +155,38 @@ export default function AdminDashboardPage() {
             </p>
           </div>
 
-          <div className="hidden sm:flex items-center gap-2.5 px-4 py-2.5 rounded-xl flex-shrink-0"
-            style={{ background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.2)" }}>
-            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <div>
-              <p className="text-xs font-semibold text-emerald-400">Sistem Aktif</p>
-              <p className="text-[10px]" style={{ color: "rgba(148,163,184,0.4)" }}>All services running</p>
+          <div className="flex flex-col items-start sm:items-end gap-3 flex-shrink-0">
+            <Link
+              href="/skill-tree"
+              className="group inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl text-sm font-bold transition-all duration-200"
+              style={{
+                background: "linear-gradient(135deg,#7c3aed,#4f46e5)",
+                border: "1px solid rgba(99,102,241,0.6)",
+                color: "#fff",
+                boxShadow: "0 10px 28px rgba(99,102,241,0.35)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-1px)";
+                e.currentTarget.style.border = "1px solid rgba(124,58,237,0.8)";
+                e.currentTarget.style.boxShadow = "0 14px 32px rgba(99,102,241,0.5)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.border = "1px solid rgba(99,102,241,0.6)";
+                e.currentTarget.style.boxShadow = "0 10px 28px rgba(99,102,241,0.35)";
+              }}
+            >
+              <GitBranch size={16} />
+              Lihat Skill Tree
+            </Link>
+
+            <div className="hidden sm:flex items-center gap-2.5 px-4 py-2.5 rounded-xl"
+              style={{ background: "rgba(16,185,129,0.08)", border: "1px solid rgba(16,185,129,0.2)" }}>
+              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <div>
+                <p className="text-xs font-semibold text-emerald-400">Sistem Aktif</p>
+                <p className="text-[10px]" style={{ color: "rgba(148,163,184,0.4)" }}>All services running</p>
+              </div>
             </div>
           </div>
         </div>
