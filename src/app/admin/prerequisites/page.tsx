@@ -1,4 +1,3 @@
-// src/app/admin/prerequisites/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -6,17 +5,19 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Plus, Trash2, ArrowRight } from "lucide-react";
+import { Plus, Trash2, ArrowRight, Search } from "lucide-react";
 import {
+  listPrerequisites,
   createPrerequisite,
   deletePrerequisite,
+  listPathEdges,
   createPathEdge,
   deletePathEdge,
   listCourseGroups,
   listCoursesBySemester,
 } from "@/services/adminService";
 import { AdminModal } from "@/components/admin/AdminModal";
-import type { AdminCourseResponse } from "@/types/admin";
+import type { AdminCourseResponse, AdminPrerequisiteResponse, AdminPathEdgeResponse } from "@/types/admin";
 
 const prereqSchema = z.object({
   course_id: z.string().min(1, "Mata kuliah wajib dipilih"),
@@ -58,10 +59,26 @@ export default function AdminPrerequisitesPage() {
   const [tab, setTab] = useState<"prereq" | "edge">("prereq");
   const [prereqModal, setPrereqModal] = useState(false);
   const [edgeModal, setEdgeModal] = useState(false);
-  const [deletePrereqTarget, setDeletePrereqTarget] = useState<{ courseId: string; requireId: string; label: string } | null>(null);
-  const [deleteEdgeTarget, setDeleteEdgeTarget] = useState<{ id: string; label: string } | null>(null);
+  const [prereqSearch, setPrereqSearch] = useState("");
+  const [edgeSearch, setEdgeSearch] = useState("");
+  const [deletePrereqTarget, setDeletePrereqTarget] = useState<AdminPrerequisiteResponse | null>(null);
+  const [deleteEdgeTarget, setDeleteEdgeTarget] = useState<AdminPathEdgeResponse | null>(null);
 
   const { data: allCourses = [], isLoading: loadingCourses } = useFlatCourses();
+
+  const { data: prereqs = [], isLoading: loadingPrereqs } = useQuery({
+    queryKey: ["admin-prereqs", prereqSearch],
+    queryFn: () => listPrerequisites(prereqSearch || undefined),
+  });
+
+  const { data: edges = [], isLoading: loadingEdges } = useQuery({
+    queryKey: ["admin-edges", edgeSearch],
+    queryFn: () => {
+      const params: { to_course?: string; from_course?: string } = {};
+      if (edgeSearch) params.to_course = edgeSearch;
+      return listPathEdges(params.to_course || params.from_course ? params : undefined);
+    },
+  });
 
   const {
     register: regPrereq,
@@ -125,7 +142,6 @@ export default function AdminPrerequisitesPage() {
         <p className="text-zinc-400 text-sm mt-1">Kelola relasi antar mata kuliah</p>
       </div>
 
-      {/* Tabs */}
       <div className="flex gap-1 p-1 bg-zinc-800 rounded-lg w-fit mb-6">
         <button
           onClick={() => setTab("prereq")}
@@ -153,10 +169,47 @@ export default function AdminPrerequisitesPage() {
             </button>
           </div>
 
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 text-center">
-            <p className="text-zinc-500 text-sm">
-              Tambah relasi prasyarat menggunakan tombol di atas. Data prasyarat dapat dilihat di halaman Skill Tree.
-            </p>
+          <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+            <div className="px-4 py-3 border-b border-zinc-800 flex items-center gap-2">
+              <Search size={15} className="text-zinc-500" />
+              <input
+                value={prereqSearch}
+                onChange={(e) => setPrereqSearch(e.target.value)}
+                placeholder="Cari nama mata kuliah..."
+                className="flex-1 bg-transparent text-sm text-white placeholder-zinc-500 focus:outline-none"
+              />
+            </div>
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-zinc-800">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-400 uppercase">Mata Kuliah</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-400 uppercase">Prasyarat</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-400 uppercase">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loadingPrereqs ? (
+                  <tr><td colSpan={3} className="px-4 py-8 text-center text-zinc-500 text-sm">Memuat data...</td></tr>
+                ) : prereqs.length === 0 ? (
+                  <tr><td colSpan={3} className="px-4 py-8 text-center text-zinc-500 text-sm">Belum ada data prasyarat</td></tr>
+                ) : (
+                  prereqs.map((p) => (
+                    <tr key={p.id} className="border-b border-zinc-800/50 hover:bg-zinc-800/30 transition-colors">
+                      <td className="px-4 py-3 text-sm text-white">{p.course_name}</td>
+                      <td className="px-4 py-3 text-sm text-zinc-300">{p.require_name}</td>
+                      <td className="px-4 py-3">
+                        <button
+                          onClick={() => setDeletePrereqTarget(p)}
+                          className="p-1.5 rounded-lg text-zinc-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
@@ -173,15 +226,52 @@ export default function AdminPrerequisitesPage() {
             </button>
           </div>
 
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 text-center">
-            <p className="text-zinc-500 text-sm">
-              Tambah relasi path edge menggunakan tombol di atas. Data edge dapat dilihat di visualisasi Skill Tree.
-            </p>
+          <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden">
+            <div className="px-4 py-3 border-b border-zinc-800 flex items-center gap-2">
+              <Search size={15} className="text-zinc-500" />
+              <input
+                value={edgeSearch}
+                onChange={(e) => setEdgeSearch(e.target.value)}
+                placeholder="Cari nama mata kuliah..."
+                className="flex-1 bg-transparent text-sm text-white placeholder-zinc-500 focus:outline-none"
+              />
+            </div>
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-zinc-800">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-400 uppercase">Dari</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-400 uppercase">Ke</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-zinc-400 uppercase">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loadingEdges ? (
+                  <tr><td colSpan={3} className="px-4 py-8 text-center text-zinc-500 text-sm">Memuat data...</td></tr>
+                ) : edges.length === 0 ? (
+                  <tr><td colSpan={3} className="px-4 py-8 text-center text-zinc-500 text-sm">Belum ada data path edge</td></tr>
+                ) : (
+                  edges.map((e) => (
+                    <tr key={e.id} className="border-b border-zinc-800/50 hover:bg-zinc-800/30 transition-colors">
+                      <td className="px-4 py-3 text-sm text-white">{e.from_course_name}</td>
+                      <td className="px-4 py-3 text-sm text-zinc-300">{e.to_course_name}</td>
+                      <td className="px-4 py-3">
+                        <button
+                          onClick={() => setDeleteEdgeTarget(e)}
+                          className="p-1.5 rounded-lg text-zinc-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
 
-      {/* Prerequisite Modal */}
+      {/* Prerequisite Create Modal */}
       <AdminModal open={prereqModal} onClose={() => { setPrereqModal(false); resetPrereq(); }} title="Tambah Prasyarat">
         <form onSubmit={handlePrereq((data) => createPrereqMut.mutate(data))} className="space-y-4">
           <div>
@@ -222,7 +312,7 @@ export default function AdminPrerequisitesPage() {
         </form>
       </AdminModal>
 
-      {/* Path Edge Modal */}
+      {/* Path Edge Create Modal */}
       <AdminModal open={edgeModal} onClose={() => { setEdgeModal(false); resetEdge(); }} title="Tambah Path Edge">
         <form onSubmit={handleEdge((data) => createEdgeMut.mutate(data))} className="space-y-4">
           <div>
@@ -258,6 +348,50 @@ export default function AdminPrerequisitesPage() {
             </button>
           </div>
         </form>
+      </AdminModal>
+
+      {/* Delete Prerequisite Modal */}
+      <AdminModal open={deletePrereqTarget !== null} onClose={() => setDeletePrereqTarget(null)} title="Hapus Prasyarat">
+        <p className="text-sm text-zinc-300 mb-6">
+          Yakin ingin menghapus prasyarat <strong className="text-white">{deletePrereqTarget?.require_name}</strong> dari <strong className="text-white">{deletePrereqTarget?.course_name}</strong>? Tindakan ini tidak bisa dibatalkan.
+        </p>
+        {deletePrereqMut.error && (
+          <div className="px-3 py-2 mb-4 bg-red-500/10 border border-red-500/30 rounded-lg text-xs text-red-400">
+            {deletePrereqMut.error.message}
+          </div>
+        )}
+        <div className="flex gap-3">
+          <button onClick={() => setDeletePrereqTarget(null)} className="flex-1 py-2 border border-zinc-700 text-zinc-300 text-sm rounded-lg hover:bg-zinc-800 transition-colors">Batal</button>
+          <button
+            onClick={() => deletePrereqTarget && deletePrereqMut.mutate({ courseId: deletePrereqTarget.course_id, requireId: deletePrereqTarget.require_id })}
+            disabled={deletePrereqMut.isPending}
+            className="flex-1 py-2 bg-red-600 hover:bg-red-500 disabled:bg-red-900 text-white text-sm font-semibold rounded-lg transition-colors"
+          >
+            {deletePrereqMut.isPending ? "Menghapus..." : "Hapus"}
+          </button>
+        </div>
+      </AdminModal>
+
+      {/* Delete Path Edge Modal */}
+      <AdminModal open={deleteEdgeTarget !== null} onClose={() => setDeleteEdgeTarget(null)} title="Hapus Path Edge">
+        <p className="text-sm text-zinc-300 mb-6">
+          Yakin ingin menghapus path edge dari <strong className="text-white">{deleteEdgeTarget?.from_course_name}</strong> ke <strong className="text-white">{deleteEdgeTarget?.to_course_name}</strong>? Tindakan ini tidak bisa dibatalkan.
+        </p>
+        {deleteEdgeMut.error && (
+          <div className="px-3 py-2 mb-4 bg-red-500/10 border border-red-500/30 rounded-lg text-xs text-red-400">
+            {deleteEdgeMut.error.message}
+          </div>
+        )}
+        <div className="flex gap-3">
+          <button onClick={() => setDeleteEdgeTarget(null)} className="flex-1 py-2 border border-zinc-700 text-zinc-300 text-sm rounded-lg hover:bg-zinc-800 transition-colors">Batal</button>
+          <button
+            onClick={() => deleteEdgeTarget && deleteEdgeMut.mutate({ id: deleteEdgeTarget.id })}
+            disabled={deleteEdgeMut.isPending}
+            className="flex-1 py-2 bg-red-600 hover:bg-red-500 disabled:bg-red-900 text-white text-sm font-semibold rounded-lg transition-colors"
+          >
+            {deleteEdgeMut.isPending ? "Menghapus..." : "Hapus"}
+          </button>
+        </div>
       </AdminModal>
     </div>
   );

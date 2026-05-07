@@ -122,6 +122,13 @@ export async function deleteLabPath(labPathId: string): Promise<void> {
 
 // PREREQUISITES
 
+export async function listPrerequisites(courseName?: string): Promise<AdminPrerequisiteResponse[]> {
+  const res = await apiClient.get("/api/admin/prerequisites", {
+    params: courseName ? { course_name: courseName } : {},
+  });
+  return res.data.data;
+}
+
 export async function createPrerequisite(
   data: CreatePrerequisiteRequest
 ): Promise<AdminPrerequisiteResponse> {
@@ -137,6 +144,11 @@ export async function deletePrerequisite(
 }
 
 // PATH EDGES
+
+export async function listPathEdges(params?: { to_course?: string; from_course?: string }): Promise<AdminPathEdgeResponse[]> {
+  const res = await apiClient.get("/api/admin/path-edges", { params });
+  return res.data.data;
+}
 
 export async function createPathEdge(
   data: CreatePathEdgeRequest
@@ -169,6 +181,10 @@ export async function updateLecture(
 ): Promise<AdminLectureResponse> {
   const res = await apiClient.patch(`/api/admin/lectures/${lectureId}`, data);
   return res.data.data;
+}
+
+export async function deleteLecture(lectureId: string): Promise<void> {
+  await apiClient.delete(`/api/admin/lectures/${lectureId}`);
 }
 
 // FRS (UPLOAD JADWAL via EXCEL)

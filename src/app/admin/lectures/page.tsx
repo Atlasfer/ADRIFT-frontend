@@ -6,9 +6,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Plus, Pencil } from "lucide-react";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { getAllLectures, createLecture, updateLecture } from "@/services/adminService";
+import { getAllLectures, createLecture, updateLecture, deleteLecture } from "@/services/adminService";
 import type { AdminLectureResponse } from "@/types/admin";
 import { AdminModal } from "@/components/admin/AdminModal";
 import { FormField } from "@/components/admin/FormField";
@@ -24,6 +24,7 @@ export default function AdminLecturesPage() {
   const qc = useQueryClient();
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<AdminLectureResponse | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<AdminLectureResponse | null>(null);
   const [search, setSearch] = useState("");
 
   const { data: lectures = [], isLoading } = useQuery({
@@ -43,6 +44,11 @@ export default function AdminLecturesPage() {
   const updateMut = useMutation({
     mutationFn: ({ id, data }: { id: string; data: LectureForm }) => updateLecture(id, data),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-lectures"] }); setModalOpen(false); setEditing(null); reset(); },
+  });
+
+  const deleteMut = useMutation({
+    mutationFn: deleteLecture,
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-lectures"] }); setDeleteTarget(null); },
   });
 
   const openCreate = () => { setEditing(null); reset(); setModalOpen(true); };
@@ -99,9 +105,14 @@ export default function AdminLecturesPage() {
                   <td className="px-4 py-3 text-sm font-mono text-indigo-400">{l.code}</td>
                   <td className="px-4 py-3 text-sm text-white">{l.name}</td>
                   <td className="px-4 py-3">
-                    <button onClick={() => openEdit(l)} className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors">
-                      <Pencil size={13} />
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => openEdit(l)} className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors">
+                        <Pencil size={13} />
+                      </button>
+                      <button onClick={() => setDeleteTarget(l)} className="p-1.5 rounded-lg text-zinc-400 hover:text-red-400 hover:bg-red-500/10 transition-colors">
+                        <Trash2 size={13} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -126,6 +137,23 @@ export default function AdminLecturesPage() {
             </button>
           </div>
         </form>
+      </AdminModal>
+
+      <AdminModal open={deleteTarget !== null} onClose={() => setDeleteTarget(null)} title="Hapus Dosen">
+        <p className="text-sm text-zinc-300 mb-6">
+          Yakin ingin menghapus <strong className="text-white">{deleteTarget?.name}</strong>? Tindakan ini tidak bisa dibatalkan.
+        </p>
+        {deleteMut.error && (
+          <div className="px-3 py-2 mb-4 bg-red-500/10 border border-red-500/30 rounded-lg text-xs text-red-400">
+            {deleteMut.error.message}
+          </div>
+        )}
+        <div className="flex gap-3">
+          <button onClick={() => setDeleteTarget(null)} className="flex-1 py-2 border border-zinc-700 text-zinc-300 text-sm rounded-lg hover:bg-zinc-800 transition-colors">Batal</button>
+          <button onClick={() => deleteTarget && deleteMut.mutate(deleteTarget.id)} disabled={deleteMut.isPending} className="flex-1 py-2 bg-red-600 hover:bg-red-500 disabled:bg-red-900 text-white text-sm font-semibold rounded-lg transition-colors">
+            {deleteMut.isPending ? "Menghapus..." : "Hapus"}
+          </button>
+        </div>
       </AdminModal>
     </div>
   );

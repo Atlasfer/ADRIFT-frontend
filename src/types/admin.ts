@@ -117,7 +117,9 @@ export interface UpdateLabPathRequest {
 export interface AdminPrerequisiteResponse {
   id: string;
   course_id: string;
+  course_name: string;
   require_id: string;
+  require_name: string;
 }
 
 export interface CreatePrerequisiteRequest {
@@ -130,7 +132,9 @@ export interface CreatePrerequisiteRequest {
 export interface AdminPathEdgeResponse {
   id: string;
   from_course_id: string;
+  from_course_name: string;
   to_course_id: string;
+  to_course_name: string;
 }
 
 export interface CreatePathEdgeRequest {
