@@ -1,4 +1,3 @@
-// src/components/frs/FilterBar.tsx
 "use client";
 
 import { ScheduleFilterParams } from "@/services/frsService";

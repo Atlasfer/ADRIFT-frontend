@@ -1,4 +1,3 @@
-// src/components/frs/ScheduleList.tsx
 "use client";
 
 import { Schedule } from "@/services/frsService";

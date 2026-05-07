@@ -1,4 +1,3 @@
-// src/components/frs/SelectedPanel.tsx
 "use client";
 
 import { useFrsStore } from "@/store/frsStore";

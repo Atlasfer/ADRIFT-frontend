@@ -1,4 +1,3 @@
-// src/components/frs/SavedPlans.tsx
 "use client";
 
 import { usePlans, usePlanDetail, useDeletePlan } from "@/hooks/useFrs";

@@ -1,4 +1,3 @@
-// src/components/layout/StudentNav.tsx
 "use client";
 
 import { useState, useRef, useEffect } from "react";
@@ -24,7 +23,6 @@ export default function StudentNav() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
 
-  // Close profile menu when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (

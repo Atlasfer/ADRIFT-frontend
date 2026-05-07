@@ -7,7 +7,7 @@ import { useAuthStore } from "@/store/authStore";
 import Image from "next/image";
 import {
   BookOpen, Calendar, FlaskConical, GraduationCap,
-  GitMerge, LogOut, LayoutDashboard, ChevronRight,
+  GitMerge, LogOut, LayoutDashboard, ChevronRight, FileUp,
 } from "lucide-react";
 
 const NAV = [
@@ -17,6 +17,7 @@ const NAV = [
   { href: "/admin/lectures", label: "Dosen", icon: GraduationCap },
   { href: "/admin/lab-paths", label: "Lab Path", icon: FlaskConical },
   { href: "/admin/prerequisites", label: "Prasyarat & Edge", icon: GitMerge },
+  { href: "/admin/frs", label: "Upload FRS", icon: FileUp },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

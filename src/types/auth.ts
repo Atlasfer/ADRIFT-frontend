@@ -1,6 +1,3 @@
-// src/types/auth.ts
-// Sesuai dengan internal/dto/user_dto.go di backend
-
 export interface UserRegistrationRequest {
   name: string;
   nrp: string;

@@ -1,4 +1,3 @@
-// src/services/frsService.ts
 import apiClient from "@/lib/axios";
 
 export interface Schedule {

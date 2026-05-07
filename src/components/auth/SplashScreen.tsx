@@ -9,19 +9,14 @@ interface SplashScreenProps {
 }
 
 export function SplashScreen({ onComplete }: SplashScreenProps) {
-  // step 0 → blank
-  // step 1 → logo circle scales in
-  // step 2 → "ADRIFT" text slides in from left
-  // step 3 → tagline fades in
-  // step 4 → everything fades out → onComplete
   const [step, setStep] = useState(0);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setStep(1), 200);   // logo in
-    const t2 = setTimeout(() => setStep(2), 900);   // text slides in
-    const t3 = setTimeout(() => setStep(3), 1600);  // tagline
-    const t4 = setTimeout(() => setStep(4), 3000);  // exit
-    const t5 = setTimeout(() => onComplete(), 3700); // redirect
+    const t1 = setTimeout(() => setStep(1), 200);  
+    const t2 = setTimeout(() => setStep(2), 900);  
+    const t3 = setTimeout(() => setStep(3), 1600); 
+    const t4 = setTimeout(() => setStep(4), 3000); 
+    const t5 = setTimeout(() => onComplete(), 3700); 
 
     return () => [t1, t2, t3, t4, t5].forEach(clearTimeout);
   }, [onComplete]);

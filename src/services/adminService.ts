@@ -1,6 +1,8 @@
-// src/services/adminService.ts
 import apiClient from "@/lib/api/client";
 import type {
+  FrsUploadAssetResponse,
+  FrsUploadScheduleResponse,
+  FrsSubmitRequest,
   AdminCourseGroupResponse,
   AdminCourseResponse,
   AdminCreateCourseRequest,
@@ -21,7 +23,7 @@ import type {
   UpdateLectureRequest,
 } from "@/types/admin";
 
-// ======== COURSES ========
+// COURSES
 
 export async function listCourseGroups(): Promise<AdminCourseGroupResponse[]> {
   const res = await apiClient.get("/api/admin/courses");
@@ -56,7 +58,7 @@ export async function deleteCourse(courseId: string): Promise<void> {
   await apiClient.delete(`/api/admin/courses/${courseId}`);
 }
 
-// ======== SCHEDULES ========
+// SCHEDULES
 
 export async function listScheduleGroups(): Promise<AdminScheduleGroupResponse[]> {
   const res = await apiClient.get("/api/admin/schedules");
@@ -92,7 +94,7 @@ export async function deleteSchedule(scheduleId: string): Promise<void> {
   await apiClient.delete(`/api/admin/schedules/${scheduleId}`);
 }
 
-// ======== LAB PATHS ========
+// LAB PATHS
 
 export async function getAllLabPaths(): Promise<AdminLabPathResponse[]> {
   const res = await apiClient.get("/api/admin/lab-paths");
@@ -118,7 +120,7 @@ export async function deleteLabPath(labPathId: string): Promise<void> {
   await apiClient.delete(`/api/admin/lab-paths/${labPathId}`);
 }
 
-// ======== PREREQUISITES ========
+// PREREQUISITES
 
 export async function createPrerequisite(
   data: CreatePrerequisiteRequest
@@ -134,7 +136,7 @@ export async function deletePrerequisite(
   await apiClient.delete(`/api/admin/prerequisites/${courseId}/${requireId}`);
 }
 
-// ======== PATH EDGES ========
+// PATH EDGES
 
 export async function createPathEdge(
   data: CreatePathEdgeRequest
@@ -147,7 +149,7 @@ export async function deletePathEdge(pathEdgeId: string): Promise<void> {
   await apiClient.delete(`/api/admin/path-edges/${pathEdgeId}`);
 }
 
-// ======== LECTURES ========
+// LECTURES
 
 export async function getAllLectures(): Promise<AdminLectureResponse[]> {
   const res = await apiClient.get("/api/admin/lectures");
@@ -167,4 +169,30 @@ export async function updateLecture(
 ): Promise<AdminLectureResponse> {
   const res = await apiClient.patch(`/api/admin/lectures/${lectureId}`, data);
   return res.data.data;
+}
+
+// FRS (UPLOAD JADWAL via EXCEL)
+
+export async function uploadFrsFile(file: File): Promise<FrsUploadAssetResponse> {
+  const form = new FormData();
+  form.append("file", file);
+  const res = await apiClient.post("/api/admin/assets/frs/upload", form, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return res.data.data;
+}
+
+export async function previewFrsSchedule(
+  data: FrsSubmitRequest
+): Promise<FrsUploadScheduleResponse> {
+  const res = await apiClient.post("/api/admin/schedule/upload", data);
+  return res.data.data;
+}
+
+export async function reviseFrsSchedule(data: FrsSubmitRequest): Promise<void> {
+  await apiClient.post("/api/admin/schedule/revise", data);
+}
+
+export async function submitFrsSchedule(data: FrsSubmitRequest): Promise<void> {
+  await apiClient.post("/api/admin/schedule/submit", data);
 }

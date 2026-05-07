@@ -1,6 +1,3 @@
-// src/types/admin.ts
-// Sesuai dengan internal/dto/admin_dto.go di backend
-
 // ======== COURSES ========
 
 export interface AdminCourseGroupResponse {
@@ -157,4 +154,41 @@ export interface CreateLectureRequest {
 export interface UpdateLectureRequest {
   code?: string;
   name?: string;
+}
+
+// ======== FRS (UPLOAD JADWAL) ========
+
+export interface FrsUploadAssetResponse {
+  object_key: string;
+}
+
+export interface FrsUploadScheduleRequest {
+  object_key: string;
+}
+
+export interface FrsScheduleRow {
+  course_name: string;
+  lecture_code: string;
+  class: string;
+  day: string;
+  start_time: string;
+  end_time: string;
+  room: string;
+  semester: number | null;
+  academic_year: string;
+  capacity: number | null;
+  sks: number | null;
+  prodi: string;
+  term: string;
+  has_null: boolean;
+}
+
+export interface FrsUploadScheduleResponse {
+  object_key: string;
+  rows: FrsScheduleRow[];
+  null_count: number;
+}
+
+export interface FrsSubmitRequest {
+  object_key: string;
 }

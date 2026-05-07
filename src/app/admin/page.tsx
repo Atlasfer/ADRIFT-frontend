@@ -5,7 +5,7 @@ import { useAuthStore } from "@/store/authStore";
 import {
   BookOpen, Calendar, GraduationCap, FlaskConical,
   GitMerge, ArrowUpRight, Plus, Activity, Database,
-  Layers, Network, Clock,
+  Layers, Network, Clock, FileUp,
 } from "lucide-react";
 
 const MODULES = [
@@ -84,10 +84,25 @@ const MODULES = [
     tagBg: "rgba(245,158,11,0.12)",
     tagColor: "#fbbf24",
   },
+  {
+    href: "/admin/frs",
+    addHref: "/admin/frs",
+    icon: FileUp,
+    label: "Upload FRS",
+    desc: "Import jadwal massal via file Excel dengan validasi otomatis",
+    iconGradient: "linear-gradient(135deg,#ec4899,#db2777)",
+    iconGlow: "rgba(236,72,153,0.35)",
+    border: "rgba(236,72,153,0.18)",
+    hoverBorder: "rgba(236,72,153,0.45)",
+    hoverBg: "rgba(236,72,153,0.06)",
+    tag: "Import",
+    tagBg: "rgba(236,72,153,0.12)",
+    tagColor: "#f9a8d4",
+  },
 ];
 
 const STATS = [
-  { icon: Layers,   label: "Total Modul",   value: "5",   sub: "Manajemen data",  color: "#3b82f6" },
+  { icon: Layers,   label: "Total Modul",   value: "6",   sub: "Manajemen data",  color: "#3b82f6" },
   { icon: Database, label: "Data Entities", value: "6+",  sub: "Tipe data aktif", color: "#8b5cf6" },
   { icon: Network,  label: "Relasi",        value: "N:N", sub: "Prasyarat & edge",color: "#14b8a6" },
   { icon: Activity, label: "Status",        value: "Live",sub: "Sistem berjalan", color: "#10b981" },

@@ -1,4 +1,3 @@
-// src/components/frs/AlternativePanel.tsx
 "use client";
 
 import { Alternative } from "@/services/frsService";
