@@ -328,13 +328,13 @@ export default function AdminFrsPage() {
       {step === 2 && preview && (
         <div className="space-y-6">
           <div className="flex flex-wrap gap-3">
-            {preview.null_records.length > 0 ? (
+            {(preview.null_records ?? []).length > 0 ? (
               <div
                 className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm"
                 style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)" }}
               >
                 <AlertTriangle size={14} className="text-red-400" />
-                <span className="text-red-300 font-medium">{preview.null_records.length}</span>
+                <span className="text-red-300 font-medium">{(preview.null_records ?? []).length}</span>
                 <span className="text-zinc-400">baris memiliki field NULL/kosong</span>
               </div>
             ) : (
@@ -382,14 +382,14 @@ export default function AdminFrsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {preview.null_records.length === 0 ? (
+                  {(preview.null_records ?? []).length === 0 ? (
                     <tr>
                       <td colSpan={14} className="px-3 py-8 text-center text-zinc-500 text-xs">
                         Tidak ada baris bermasalah — semua field terisi lengkap.
                       </td>
                     </tr>
                   ) : (
-                    preview.null_records.map((row: FrsScheduleRow, i) => (
+                    (preview.null_records ?? []).map((row: FrsScheduleRow, i) => (
                       <tr
                         key={row.id}
                         style={{
@@ -422,7 +422,7 @@ export default function AdminFrsPage() {
           </div>
 
           {/* Missing lecture codes */}
-          {preview.missing_lecture_codes.length > 0 && (
+          {(preview.missing_lecture_codes ?? []).length > 0 && (
             <div
               className="px-4 py-3 rounded-xl text-xs space-y-1"
               style={{ background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.25)" }}
@@ -431,7 +431,7 @@ export default function AdminFrsPage() {
                 <AlertTriangle size={13} /> Kode dosen tidak ditemukan di sistem:
               </p>
               <div className="flex flex-wrap gap-2">
-                {preview.missing_lecture_codes.map((code) => (
+                {(preview.missing_lecture_codes ?? []).map((code) => (
                   <span
                     key={code}
                     className="px-2 py-0.5 rounded-md bg-yellow-500/15 text-yellow-300 border border-yellow-500/30 font-mono"
@@ -501,13 +501,13 @@ export default function AdminFrsPage() {
               ) : (
                 <Send size={14} />
               )}
-              {preview.null_records.length > 0 ? "Tetap Submit" : "Submit ke Database"}
+              {(preview.null_records ?? []).length > 0 ? "Tetap Submit" : "Submit ke Database"}
             </button>
           </div>
 
-          {preview.null_records.length > 0 && (
+          {(preview.null_records ?? []).length > 0 && (
             <p className="text-xs text-center text-zinc-500">
-              ⚠️ Terdapat <span className="text-red-400 font-medium">{preview.null_records.length} baris</span> dengan field NULL/kosong.
+              ⚠️ Terdapat <span className="text-red-400 font-medium">{(preview.null_records ?? []).length} baris</span> dengan field NULL/kosong.
               Disarankan untuk memilih <span className="text-yellow-400">Revise</span> dan memperbaiki file Excel terlebih dahulu.
             </p>
           )}

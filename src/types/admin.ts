@@ -189,8 +189,8 @@ export interface FrsUploadScheduleResponse {
   file_name: string;
   academic_year: string;
   term: string;
-  null_records: FrsScheduleRow[];
-  missing_lecture_codes: string[];
+  null_records: FrsScheduleRow[] | null;
+  missing_lecture_codes: string[] | null;
 }
 
 export interface FrsSubmitRequest {
