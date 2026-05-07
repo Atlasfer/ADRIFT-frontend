@@ -167,6 +167,7 @@ export interface FrsUploadScheduleRequest {
 }
 
 export interface FrsScheduleRow {
+  id: string;
   course_name: string;
   lecture_code: string;
   class: string;
@@ -180,15 +181,20 @@ export interface FrsScheduleRow {
   sks: number | null;
   prodi: string;
   term: string;
-  has_null: boolean;
 }
 
 export interface FrsUploadScheduleResponse {
   object_key: string;
-  rows: FrsScheduleRow[];
-  null_count: number;
+  file_url: string;
+  file_name: string;
+  academic_year: string;
+  term: string;
+  null_records: FrsScheduleRow[];
+  missing_lecture_codes: string[];
 }
 
 export interface FrsSubmitRequest {
   object_key: string;
+  academic_year: string;
+  term: string;
 }

@@ -83,11 +83,22 @@ function NullBadge({ value }: { value: unknown }) {
   return <span className="text-zinc-300 text-xs">{String(value)}</span>;
 }
 
+function formatTime(iso: string): string {
+  try {
+    const d = new Date(iso);
+    return d.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", hour12: false });
+  } catch {
+    return iso;
+  }
+}
+
 export default function AdminFrsPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [objectKey, setObjectKey] = useState<string>("");
+  const [academicYear, setAcademicYear] = useState<string>("");
+  const [term, setTerm] = useState<string>("GANJIL");
   const [preview, setPreview] = useState<FrsUploadScheduleResponse | null>(null);
   const [dragOver, setDragOver] = useState(false);
 
@@ -96,13 +107,14 @@ export default function AdminFrsPage() {
     mutationFn: (file: File) => uploadFrsFile(file),
     onSuccess: async (data) => {
       setObjectKey(data.object_key);
-      previewMut.mutate({ object_key: data.object_key });
+      previewMut.mutate({ object_key: data.object_key, academic_year: academicYear, term });
     },
   });
 
   const previewMut = useMutation({
     mutationFn: previewFrsSchedule,
     onSuccess: (data) => {
+      setObjectKey(data.object_key); // use the processed key for revise/submit
       setPreview(data);
       setStep(2);
     },
@@ -142,12 +154,13 @@ export default function AdminFrsPage() {
   };
 
   const handleUpload = () => {
-    if (!selectedFile) return;
+    if (!selectedFile || !academicYear.trim() || !term.trim()) return;
     uploadFileMut.mutate(selectedFile);
   };
 
   const isUploading = uploadFileMut.isPending || previewMut.isPending;
   const uploadError = uploadFileMut.error || previewMut.error;
+  const canUpload = !!selectedFile && academicYear.trim().length > 0 && term.trim().length > 0 && !isUploading;
 
   return (
     <div className="p-8 max-w-5xl">
@@ -235,20 +248,54 @@ export default function AdminFrsPage() {
             </div>
           )}
 
+          {/* Academic Year & Term */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-zinc-400">Tahun Akademik</label>
+              <input
+                type="text"
+                placeholder="Contoh: 2025/2026"
+                value={academicYear}
+                onChange={(e) => setAcademicYear(e.target.value)}
+                className="w-full px-3 py-2.5 rounded-xl text-sm text-white placeholder-zinc-600 outline-none transition-all"
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border: academicYear.trim() ? "1px solid rgba(99,102,241,0.4)" : "1px solid rgba(255,255,255,0.1)",
+                }}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-zinc-400">Semester</label>
+              <select
+                value={term}
+                onChange={(e) => setTerm(e.target.value)}
+                className="w-full px-3 py-2.5 rounded-xl text-sm text-white outline-none transition-all"
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(99,102,241,0.4)",
+                  appearance: "none",
+                }}
+              >
+                <option value="GANJIL" style={{ background: "#0d1426" }}>GANJIL</option>
+                <option value="GENAP" style={{ background: "#0d1426" }}>GENAP</option>
+              </select>
+            </div>
+          </div>
+
           {/* Upload button */}
           <button
             onClick={handleUpload}
-            disabled={!selectedFile || isUploading}
+            disabled={!canUpload}
             className="flex items-center justify-center gap-2 w-full py-3 rounded-xl font-semibold text-sm transition-all"
             style={{
-              background: selectedFile && !isUploading
+              background: canUpload
                 ? "linear-gradient(135deg,#3b82f6,#6366f1)"
                 : "rgba(255,255,255,0.05)",
-              color: selectedFile && !isUploading ? "#fff" : "rgba(148,163,184,0.4)",
-              border: selectedFile && !isUploading
+              color: canUpload ? "#fff" : "rgba(148,163,184,0.4)",
+              border: canUpload
                 ? "1px solid rgba(59,130,246,0.4)"
                 : "1px solid rgba(255,255,255,0.08)",
-              boxShadow: selectedFile && !isUploading ? "0 0 20px rgba(59,130,246,0.25)" : "none",
+              boxShadow: canUpload ? "0 0 20px rgba(59,130,246,0.25)" : "none",
             }}
           >
             {isUploading ? (
@@ -281,23 +328,14 @@ export default function AdminFrsPage() {
       {step === 2 && preview && (
         <div className="space-y-6">
           <div className="flex flex-wrap gap-3">
-            <div
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm"
-              style={{ background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.2)" }}
-            >
-              <FileSpreadsheet size={14} className="text-blue-400" />
-              <span className="text-blue-300 font-medium">{preview.rows.length}</span>
-              <span className="text-zinc-400">baris ditemukan</span>
-            </div>
-
-            {preview.null_count > 0 ? (
+            {preview.null_records.length > 0 ? (
               <div
                 className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm"
                 style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)" }}
               >
                 <AlertTriangle size={14} className="text-red-400" />
-                <span className="text-red-300 font-medium">{preview.null_count}</span>
-                <span className="text-zinc-400">baris memiliki field NULL</span>
+                <span className="text-red-300 font-medium">{preview.null_records.length}</span>
+                <span className="text-zinc-400">baris memiliki field NULL/kosong</span>
               </div>
             ) : (
               <div
@@ -308,6 +346,15 @@ export default function AdminFrsPage() {
                 <span className="text-emerald-300 font-medium">Semua data lengkap</span>
               </div>
             )}
+
+            <div
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm"
+              style={{ background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.2)" }}
+            >
+              <FileSpreadsheet size={14} className="text-blue-400" />
+              <span className="text-blue-300 font-medium">{preview.academic_year}</span>
+              <span className="text-zinc-400">{preview.term}</span>
+            </div>
           </div>
 
           {/* Table */}
@@ -335,40 +382,66 @@ export default function AdminFrsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {preview.rows.map((row: FrsScheduleRow, i) => (
-                    <tr
-                      key={i}
-                      style={{
-                        borderBottom: "1px solid rgba(255,255,255,0.04)",
-                        background: row.has_null
-                          ? "rgba(239,68,68,0.04)"
-                          : i % 2 === 0
-                          ? "transparent"
-                          : "rgba(255,255,255,0.01)",
-                      }}
-                    >
-                      <td className="px-3 py-2.5 text-zinc-600">{i + 1}</td>
-                      <td className="px-3 py-2.5 max-w-[160px] truncate">
-                        <NullBadge value={row.course_name} />
+                  {preview.null_records.length === 0 ? (
+                    <tr>
+                      <td colSpan={14} className="px-3 py-8 text-center text-zinc-500 text-xs">
+                        Tidak ada baris bermasalah — semua field terisi lengkap.
                       </td>
-                      <td className="px-3 py-2.5"><NullBadge value={row.lecture_code} /></td>
-                      <td className="px-3 py-2.5"><NullBadge value={row.class} /></td>
-                      <td className="px-3 py-2.5"><NullBadge value={row.day} /></td>
-                      <td className="px-3 py-2.5"><NullBadge value={row.start_time} /></td>
-                      <td className="px-3 py-2.5"><NullBadge value={row.end_time} /></td>
-                      <td className="px-3 py-2.5"><NullBadge value={row.room} /></td>
-                      <td className="px-3 py-2.5"><NullBadge value={row.semester} /></td>
-                      <td className="px-3 py-2.5"><NullBadge value={row.sks} /></td>
-                      <td className="px-3 py-2.5"><NullBadge value={row.capacity} /></td>
-                      <td className="px-3 py-2.5"><NullBadge value={row.prodi} /></td>
-                      <td className="px-3 py-2.5"><NullBadge value={row.term} /></td>
-                      <td className="px-3 py-2.5"><NullBadge value={row.academic_year} /></td>
                     </tr>
-                  ))}
+                  ) : (
+                    preview.null_records.map((row: FrsScheduleRow, i) => (
+                      <tr
+                        key={row.id}
+                        style={{
+                          borderBottom: "1px solid rgba(255,255,255,0.04)",
+                          background: "rgba(239,68,68,0.05)",
+                        }}
+                      >
+                        <td className="px-3 py-2.5 text-zinc-600">{i + 1}</td>
+                        <td className="px-3 py-2.5 max-w-[160px] truncate">
+                          <NullBadge value={row.course_name} />
+                        </td>
+                        <td className="px-3 py-2.5"><NullBadge value={row.lecture_code} /></td>
+                        <td className="px-3 py-2.5"><NullBadge value={row.class} /></td>
+                        <td className="px-3 py-2.5"><NullBadge value={row.day} /></td>
+                        <td className="px-3 py-2.5"><NullBadge value={row.start_time ? formatTime(row.start_time) : row.start_time} /></td>
+                        <td className="px-3 py-2.5"><NullBadge value={row.end_time ? formatTime(row.end_time) : row.end_time} /></td>
+                        <td className="px-3 py-2.5"><NullBadge value={row.room} /></td>
+                        <td className="px-3 py-2.5"><NullBadge value={row.semester} /></td>
+                        <td className="px-3 py-2.5"><NullBadge value={row.sks} /></td>
+                        <td className="px-3 py-2.5"><NullBadge value={row.capacity === 0 ? null : row.capacity} /></td>
+                        <td className="px-3 py-2.5"><NullBadge value={row.prodi} /></td>
+                        <td className="px-3 py-2.5"><NullBadge value={row.term} /></td>
+                        <td className="px-3 py-2.5"><NullBadge value={row.academic_year} /></td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
           </div>
+
+          {/* Missing lecture codes */}
+          {preview.missing_lecture_codes.length > 0 && (
+            <div
+              className="px-4 py-3 rounded-xl text-xs space-y-1"
+              style={{ background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.25)" }}
+            >
+              <p className="font-semibold text-yellow-400 mb-1 flex items-center gap-1.5">
+                <AlertTriangle size={13} /> Kode dosen tidak ditemukan di sistem:
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {preview.missing_lecture_codes.map((code) => (
+                  <span
+                    key={code}
+                    className="px-2 py-0.5 rounded-md bg-yellow-500/15 text-yellow-300 border border-yellow-500/30 font-mono"
+                  >
+                    {code || "<empty>"}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Errors */}
           {(reviseMut.error || submitMut.error) && (
@@ -384,7 +457,7 @@ export default function AdminFrsPage() {
           <div className="flex gap-3">
             {/*  kembali & perbaiki Excel */}
             <button
-              onClick={() => reviseMut.mutate({ object_key: objectKey })}
+              onClick={() => reviseMut.mutate({ object_key: objectKey, academic_year: academicYear, term })}
               disabled={reviseMut.isPending || submitMut.isPending}
               className="flex items-center justify-center gap-2 flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all"
               style={{
@@ -403,7 +476,7 @@ export default function AdminFrsPage() {
 
             {/* Submit */}
             <button
-              onClick={() => submitMut.mutate({ object_key: objectKey })}
+              onClick={() => submitMut.mutate({ object_key: objectKey, academic_year: academicYear, term })}
               disabled={submitMut.isPending || reviseMut.isPending}
               className="flex items-center justify-center gap-2 flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all"
               style={{
@@ -428,13 +501,13 @@ export default function AdminFrsPage() {
               ) : (
                 <Send size={14} />
               )}
-              {preview.null_count > 0 ? "Tetap Submit" : "Submit ke Database"}
+              {preview.null_records.length > 0 ? "Tetap Submit" : "Submit ke Database"}
             </button>
           </div>
 
-          {preview.null_count > 0 && (
+          {preview.null_records.length > 0 && (
             <p className="text-xs text-center text-zinc-500">
-              ⚠️ Terdapat <span className="text-red-400 font-medium">{preview.null_count} baris</span> dengan field NULL.
+              ⚠️ Terdapat <span className="text-red-400 font-medium">{preview.null_records.length} baris</span> dengan field NULL/kosong.
               Disarankan untuk memilih <span className="text-yellow-400">Revise</span> dan memperbaiki file Excel terlebih dahulu.
             </p>
           )}
